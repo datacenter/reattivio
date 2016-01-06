@@ -1,0 +1,86 @@
+/*
+  Possible Animations:
+  enter
+  leave
+  appear Must set transitionAppear={true} on animation component 
+*/
+
+.order-enter
+  transition all 0.3s
+  transform translateX(-120%)
+  max-height 0
+  padding 0 !important
+  &.order-enter-active
+    max-height 60px
+    padding 2rem 0 !important
+    background white
+    transform translateX(0)
+
+.order-leave
+  transition all 0.3s
+  transform translateX(0)
+  &.order-leave-active
+    max-height 0
+    padding 0
+    transform translateX(120%)
+
+
+.count-enter
+  transition all .2s
+  transform translateY(100%)
+  &.count-enter-active
+    opacity 1
+    transform translateY(0)
+    
+.count-leave
+  transition all .2s
+  left 0
+  bottom 0
+  transform translateY(0)
+  position absolute
+  &.count-leave-active
+    transform translateY(-100%)
+    
+
+.example-enter
+  opacity: 0.01
+  &.example-enter-active 
+    opacity: 1
+    transition: opacity 500ms ease-in
+
+
+.example-leave
+  max-height: 600px
+  opacity: 1
+  &.example-leave-active 
+    max-height: 1px
+    opacity: 0
+    transition: max-height 500ms ease-out, opacity 100ms
+
+
+.example-appear
+  opacity: 0.01
+  &.example-appear-active
+    opacity: 1
+    transition: opacity 500ms ease-in
+
+
+.longer-enter 
+  opacity: 0.01
+  &.longer-enter-active
+    opacity: 1
+    transition: opacity 800ms ease-in
+
+.longer-leave
+  max-height: 600px
+  opacity: 1
+  &.longer-leave-active
+    max-height: 1px
+    opacity: 0
+    transition: max-height 500ms ease-out, opacity 100ms
+
+.longer-appear
+  opacity: 0.01
+  &.longer-appear-active
+    opacity: 1
+    transition: opacity 800ms ease-in
