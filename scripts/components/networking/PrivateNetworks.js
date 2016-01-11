@@ -7,22 +7,22 @@ import ReactDOM from 'react-dom';
 import autobind from 'autobind-decorator';
 import Paper from 'material-ui/lib/paper';
 import reactMixin from 'react-mixin';
-const LinkedStateMixin = require('react-addons-linked-state-mixin');
-const helpers = require('../../helpers');
-const List = require('material-ui/lib/lists/list');
-const ListDivider = require('material-ui/lib/lists/list-divider');
-const ListItem = require('material-ui/lib/lists/list-item');
-const Avatar = require('material-ui/lib/avatar');
-const Colors = require('material-ui/src/styles/colors');
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import helpers from '../../helpers';
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import Colors from 'material-ui/lib/styles/colors';
 
-const FloatingActionButton = require('material-ui/lib/floating-action-button');
-const FontIcon = require('material-ui/lib/font-icon');
-const IconButton = require('material-ui/lib/icon-button');
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import FontIcon from 'material-ui/lib/font-icon';
+import IconButton from 'material-ui/lib/icon-button';
 
-const Card = require('material-ui/lib/card/card');
-const CardExpandable = require('material-ui/lib/card/card-expandable');
-const CardHeader = require('material-ui/lib/card/card-header');
-const CardText = require('material-ui/lib/card/card-text');
+import Card from 'material-ui/lib/card/card';
+import CardExpandable from 'material-ui/lib/card/card-expandable';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardText from 'material-ui/lib/card/card-text';
 
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';

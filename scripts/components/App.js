@@ -19,22 +19,25 @@ import { History } from 'react-router';
 import AppBar from 'material-ui/lib/app-bar'
 import Paper from 'material-ui/lib/paper';
 
+import FMUI from 'formsy-material-ui';
+const {FormsyText} = FMUI;
 
 import LeftNav from 'material-ui/lib/left-nav';
-import MenuItem from 'material-ui/lib/menu/menu-item';
-import Divider from 'material-ui/lib/menus/menu-divider';
+import MenuItem from 'material-ui/lib/menus/menu-item';
+import Divider from 'material-ui/lib/divider';
 
 
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Colors from 'material-ui/lib/styles/colors';
-const FlatButton = require('material-ui/lib/flat-button');
-const Dialog = require('material-ui/lib/dialog');
+import FlatButton from 'material-ui/lib/flat-button';
+import Dialog from 'material-ui/lib/dialog';
+import TextField from 'material-ui/lib/text-field';
 
 import Immutable from 'immutable'
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
+//import injectTapEventPlugin from 'react-tap-event-plugin';
+//injectTapEventPlugin();
 
 @
 autobind
@@ -62,10 +65,10 @@ class App extends React.Component {
       fabric: {},
       baseURL: '',
       refreshJobId: null,
-      apicCookie: null
+      apicCookie: null,
+      addTenant: false,
+      leftNav: false,
     };
-
-    this.handleAppBarClick = this.handleAppBarClick.bind(this);
   }
 
   componentWillMount(){
@@ -284,19 +287,20 @@ class App extends React.Component {
   }
 
   handleAppBarClick(event){
-    this.refs.leftNav.toggle();
+    this.setState({
+      leftNav: !this.state.leftNav
+    })
   }
 
   renderTenantDialog(){
     let standardActions = [
-      {
-        text: 'Done'
-      },
-    ];
+      <FlatButton label="Done" onTouchTap={ this._handleRequestClose } keyboardFocused={ true }
+      />,
+    ]
 
     return (
-    <Dialog title={ `Tenant ${this.state.fvTenant.attributes.name}` } actions={ standardActions } actionFocus="submit"
-    open={ this.state.tenantDialogOpen } onRequestClose={ this._handleRequestClose }>
+    <Dialog title={ `Tenant ${this.state.fvTenant.attributes.name}` } actions={ standardActions } open={ this.state.tenantDialogOpen }
+    onRequestClose={ this._handleRequestClose }>
       { this.state.fvTenant.attributes.descr } </Dialog>
     )
   }
@@ -313,71 +317,133 @@ class App extends React.Component {
     })
   }
 
-  onLeftNavChange(e, key, payload){
-    if(payload.type == 'fvTenant') {
-      this.setTenant(payload.text)
-    } else if(payload.type == 'link') {
-      this.context.history.pushState(null, payload.route);
-    } else if(payload.type == 'toggleConfigHelper') {
-      const newState = !this.state.miniConfigHelper
-      this.setState({
-        miniConfigHelper: newState
+  showAddTenant(){
+
+    this.setState({
+      addTenant: true
+    })
+  }
+
+  cancelAddTenant(){
+    console.log('Closing Add Tenant')
+    this.setState({
+      addTenant: false
+    })
+  }
+
+  renderAddTenant(){
+    let standardActions = [
+      <FlatButton label="Cancel" onTouchTap={ this.cancelAddTenant } />,
+      <FlatButton label='Add Tenant' primary={ true } onTouchTap={ this.addTenant }
+      keyboardFocused={ true } />
+    ];
+
+    return (
+    <Dialog title="Add a new Tenant" actions={ standardActions } open={ this.state.addTenant }
+    onRequestClose={ null }>
+      Please give your new Tenant a name
+      <br />
+      <br />
+      <Formsy.Form onValidSubmit={ this.addTenant }>
+        <FormsyText required={ true } name="tenantName" hintText={ "Tenant Name" }
+        ref="tenantName" style={ {  marginTop: 5,  width: 400} } />
+      </Formsy.Form>
+    </Dialog>
+    )
+  }
+
+  addTenant(){
+    this.setState({
+      addTenant: false
+    })
+    let tenantName = this.refs.tenantName.getValue()
+    this.pushConfiguration(
+      `uni/tn-${tenantName}`, {
+        fvTenant: {
+          attributes: {
+            name: this.refs.tenantName.getValue(),
+            status: "created,modified"
+          },
+          children: [
+            {
+              fvCtx: {
+                attributes: {
+                  name: "default",
+                  status: "created,modified"
+                }
+              }
+            }
+          ]
+        }
       })
-      localStorage.setItem('miniConfigHelper', JSON.stringify(newState));
-    }
   }
 
 
+  switchTenant(event){
+    this.setTenant(event.target.textContent)
+    this.setState({
+      leftNav: !this.state.leftNav
+    })
+  }
+
+  switchFabric(){
+    this.context.history.pushState(null, "/")
+  }
+
+
+  toggleConfigHelper(){
+    const newState = !this.state.miniConfigHelper
+    this.setState({
+      miniConfigHelper: newState
+    })
+    localStorage.setItem('miniConfigHelper', JSON.stringify(newState));
+  }
+
+  toggleLeftNav(open){
+    this.setState({
+      leftNav: open
+    })
+  }
+
   render(){
 
+    const tenants = this.state.fvTenants.map((object) => {
+      var tenant = object.fvTenant.attributes.name
+      return (<MenuItem key={ tenant } onTouchTap={ this.switchTenant } tenant={ tenant }>
+                { tenant }
+              </MenuItem>)
+    })
+
+    var leftNav = (
+    <LeftNav docked={ false } open={ this.state.leftNav } onRequestChange={ this.toggleLeftNav }>
+      <MenuItem onTouchTap={ this.switchFabric } route="/">Switch Fabric</MenuItem>
+      <Divider/>
+      <MenuItem disabled={ true }>Options</MenuItem>
+      <MenuItem onTouchTap={ this.toggleConfigHelper }>
+        { this.state.miniConfigHelper ? 'Enable Config Helper' : 'Disable Config Helper' }
+      </MenuItem>
+      <Divider />
+      <MenuItem disabled={ true }>Tools</MenuItem>
+      <MenuItem>Dashboard</MenuItem>
+      <MenuItem>Administration</MenuItem>
+      <MenuItem>Underlay Management</MenuItem>
+      <Divider />
+      <MenuItem disabled={ true }>Tenants</MenuItem>
+      <MenuItem onTouchTap={ this.showAddTenant }>+ Add Tenant</MenuItem>
+      { tenants }
+    </LeftNav>
 
 
-    var menuItems = [
-      {
-        type: 'link',
-        text: 'Switch Fabric',
-        route: '/'
-      },
-      {
-        type: MenuItem.Types.SUBHEADER,
-        text: 'Tools'
-      },
-      {
-        type: 'toggleConfigHelper',
-        text: this.state.miniConfigHelper ? 'Enable Config Helper' : 'Disable Config Helper'
-      },
-      {
-        type: 'link',
-        text: 'Dashboard'
-      },
-      {
-        type: 'link',
-        text: 'Administration'
-      },
-      {
-        type: 'link',
-        text: 'Underlay Management'
-      },
-      {
-        type: MenuItem.Types.SUBHEADER,
-        text: 'Tenants'
-      }
-    ];
+    )
 
-    this.state.fvTenants.map((object) => menuItems.push({
-        type: 'fvTenant',
-        text: object.fvTenant.attributes.name
-      }))
 
     /*esfmt-ignore-start*/
     return (
     <div style={{margin: 10}}>
       { this.renderTenantDialog() }
-      <LeftNav 
-        ref="leftNav" 
-        docked={ false } 
-        menuItems={ menuItems }
-        onChange={ this.onLeftNavChange } />
+      { this.renderAddTenant() }
+
+      {leftNav}
 
       <AppBar 
         title="Reattiv.io"

@@ -82,9 +82,19 @@ function buildScript(file, watch){
     ],
     debug: true,
     transform: [
-      babelify.configure({
-        stage: 0
-      })
+      [
+        babelify,
+        {
+          presets: [
+            "es2015",
+            "stage-0",
+            "react",
+          ],
+          plugins: [
+            "transform-decorators-legacy",
+          ],
+        }
+      ]
     ]
   };
 
@@ -97,11 +107,11 @@ function buildScript(file, watch){
       .on('error', handleErrors)
       .pipe(source(file))
       .pipe(gulp.dest('./build/'))
-      // If you also want to uglify it
-      // .pipe(buffer())
-      // .pipe(uglify())
-      // .pipe(rename('app.min.js'))
-      // .pipe(gulp.dest('./build'))
+      // Minify for production
+      //.pipe(buffer())
+      //.pipe(uglify())
+      //.pipe(rename('app.min.js'))
+      //.pipe(gulp.dest('./build'))
       .pipe(reload({
         stream: true
       }))

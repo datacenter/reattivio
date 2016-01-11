@@ -5,24 +5,26 @@
 
 import React, { PropTypes } from 'react';
 import autobind from 'autobind-decorator';
-const helpers = require('../../helpers');
+import helpers from '../../helpers';
 import $ from 'jquery';
 
 
 import Paper from 'material-ui/lib/paper';
-const Card = require('material-ui/lib/card/card');
-const CardActions = require('material-ui/lib/card/card-actions');
-const CardExpandable = require('material-ui/lib/card/card-expandable');
-const CardHeader = require('material-ui/lib/card/card-header');
-const CardMedia = require('material-ui/lib/card/card-media');
-const CardText = require('material-ui/lib/card/card-text');
-const Avatar = require('material-ui/lib/avatar');
-const FlatButton = require('material-ui/lib/flat-button');
-const RaisedButton = require('material-ui/lib/raised-button');
-const Snackbar = require('material-ui/lib/snackbar');
-const FloatingActionButton = require('material-ui/lib/floating-action-button');
-const FontIcon = require('material-ui/lib/font-icon');
+import Card from 'material-ui/lib/card/card';
+import CardActions from 'material-ui/lib/card/card-actions';
+import CardExpandable from 'material-ui/lib/card/card-expandable';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardMedia from 'material-ui/lib/card/card-media';
+import CardText from 'material-ui/lib/card/card-text';
+import Avatar from 'material-ui/lib/avatar';
+import FlatButton from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/lib/raised-button';
+import Snackbar from 'material-ui/lib/snackbar';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import FontIcon from 'material-ui/lib/font-icon';
 
+import FMUI from 'formsy-material-ui';
+const {FormsySelect} = FMUI;
 
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
@@ -112,7 +114,7 @@ class USegEpg extends React.Component {
     })
 
     let matchItemContainer = helpers.parseType(this.props.epg.children, 'fvCrtrn')[ 0 ]
-    let matchItems = matchItemContainer.children
+    let matchItems = matchItemContainer.children || []
     let matchBin = {
       startsWith: [],
       endsWith: [],
@@ -151,6 +153,7 @@ class USegEpg extends React.Component {
       availableVMIDs: [],
       availableHypervisors: [],
       osTypes: [],
+      sbOpen: false
     };
     this.internalToApicMapping = {
       vmName: 'vm-name',
@@ -178,9 +181,9 @@ class USegEpg extends React.Component {
       lastSelectedMatchItem: {
         matchItemName,
         matchBinType
-      }
+      },
+      sbOpen: true
     })
-    this.refs.snackbar.show()
   }
 
   removeMatchItem(itemName, itemType, binType){
@@ -220,7 +223,7 @@ class USegEpg extends React.Component {
     var attributes = {
       "fvCrtrn": {
         "attributes": {
-          "match": "any",
+          "match": "all",
           "name": "default",
         },
         "children": []
@@ -252,6 +255,12 @@ class USegEpg extends React.Component {
     this.props.pushConfiguration(epgDn, attributes)
   }
 
+  closeSB(){
+    this.setState({
+      sbOpen: false
+    })
+  }
+
   render(){
 
     var badgeIcon = (
@@ -266,6 +275,12 @@ class USegEpg extends React.Component {
     let availableVMIDs = this.getAvailableItems(this.state.availableVMIDs, this.state.matchBin, 'vmID', this.state.vmIDFilter)
 
 
+    let matchItemContainer = helpers.parseType(this.props.epg.children, 'fvCrtrn')[ 0 ]
+    if(matchItemContainer) {
+      var matchModeValue = matchItemContainer.attributes.match || "any"
+    } else {
+      var matchModeValue = "any"
+    }
 
     return (
     <Card>
@@ -283,6 +298,14 @@ class USegEpg extends React.Component {
                 <ToolbarGroup float="right">
                   <RaisedButton primary={ true } label="Save Match Items" onClick={ this.save }
                   />
+                </ToolbarGroup>
+                <ToolbarGroup float="right">
+                  <div style={ {  display: 'inline-block'} }>
+                    <Formsy.Form>
+                      <FormsySelect style={ {  marginTop: 5} } name="matchMode" value={ matchModeValue }
+                      menuItems={ [  {    payload: 'any',    text: 'Match at least one item'  },  {    payload: 'AtmostOne',    text: 'Match at most one item'  },  {    payload: 'All',    text: 'Must match all items'  },  {    payload: 'None',    text: 'None (Disable Policy)'  }] } />
+                    </Formsy.Form>
+                  </div>
                 </ToolbarGroup>
               </Toolbar>
               <Paper zDepth={ 3 }>
@@ -305,8 +328,8 @@ class USegEpg extends React.Component {
                       />
                     </div>
                   </div>
-                  <Snackbar message={ `${this.state.lastSelectedMatchItem.matchItemName} added to ${this.state.lastSelectedMatchItem.matchBinType}` } autoHideDuration={ 2500 } ref="snackbar"
-                  />
+                  <Snackbar message={ `${this.state.lastSelectedMatchItem.matchItemName} added to ${this.state.lastSelectedMatchItem.matchBinType}` } autoHideDuration={ 2500 } open={ this.state.sbOpen }
+                  onRequestClose={ this.closeSB } />
                 </div>
               </Paper>
             </div>

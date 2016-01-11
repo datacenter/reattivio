@@ -7,25 +7,25 @@ import reactMixin from 'react-mixin';
 import autobind from 'autobind-decorator';
 import Paper from 'material-ui/lib/paper';
 
-const LinkedStateMixin = require('react-addons-linked-state-mixin');
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
-const helpers = require('../../helpers');
-const List = require('material-ui/lib/lists/list');
-const ListDivider = require('material-ui/lib/lists/list-divider');
-const ListItem = require('material-ui/lib/lists/list-item');
-const Avatar = require('material-ui/lib/avatar');
-const Colors = require('material-ui/src/styles/colors');
-const FloatingActionButton = require('material-ui/lib/floating-action-button');
-const FontIcon = require('material-ui/lib/font-icon');
+import helpers from '../../helpers';
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import Colors from 'material-ui/lib/styles/colors';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import FontIcon from 'material-ui/lib/font-icon';
 
-const Card = require('material-ui/lib/card/card');
-const CardExpandable = require('material-ui/lib/card/card-expandable');
-const CardHeader = require('material-ui/lib/card/card-header');
-const CardText = require('material-ui/lib/card/card-text');
-const CardTitle = require('material-ui/lib/card/card-title');
-const CardActions = require('material-ui/lib/card/card-actions');
+import Card from 'material-ui/lib/card/card';
+import CardExpandable from 'material-ui/lib/card/card-expandable';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardText from 'material-ui/lib/card/card-text';
+import CardTitle from 'material-ui/lib/card/card-title';
+import CardActions from 'material-ui/lib/card/card-actions';
 
-const IconButton = require('material-ui/lib/icon-button');
+import IconButton from 'material-ui/lib/icon-button';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
 import Menu from 'material-ui/lib/menus/menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
@@ -35,11 +35,11 @@ import ToolbarSeparator from 'material-ui/lib/toolbar/toolbar-separator';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import TextField from 'material-ui/lib/text-field';
 
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
-const FlatButton = require('material-ui/lib/flat-button');
-const RaisedButton = require('material-ui/lib/raised-button');
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import FlatButton from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/lib/raised-button';
 
-const FMUI = require('formsy-material-ui');
+import FMUI from 'formsy-material-ui';
 const {FormsyCheckbox, FormsyDate, FormsyRadio, FormsyRadioGroup, FormsySelect, FormsyText, FormsyTime, FormsyToggle} = FMUI;
 @
 autobind

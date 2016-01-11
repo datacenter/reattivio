@@ -21,14 +21,14 @@ import CardText from 'material-ui/lib/card/card-text';
 
 import Badge from 'material-ui/lib/badge';
 
-const List = require('material-ui/lib/lists/list');
-const ListDivider = require('material-ui/lib/lists/list-divider');
-const ListItem = require('material-ui/lib/lists/list-item');
-const Avatar = require('material-ui/lib/avatar');
-const Colors = require('material-ui/src/styles/colors');
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import Colors from 'material-ui/lib/styles/colors';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-const helpers = require('../helpers');
+import helpers from '../helpers';
 
 
 
@@ -78,6 +78,7 @@ class Tenant extends React.Component {
 
     if(tenant != nextTenant) {
       setTimeout(this.getHealthScore.bind(this, nextTenant), 500)
+      this.onSelectEpg('', '', '')
     }
   }
 

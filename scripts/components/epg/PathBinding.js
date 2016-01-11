@@ -4,33 +4,32 @@
 import React, { PropTypes } from 'react';
 import autobind from 'autobind-decorator';
 import reactMixin from 'react-mixin';
-const helpers = require('../../helpers');
+import helpers from '../../helpers';
 
 import $ from 'jquery';
-const Card = require('material-ui/lib/card/card');
-const CardActions = require('material-ui/lib/card/card-actions');
-const CardExpandable = require('material-ui/lib/card/card-expandable');
-const CardHeader = require('material-ui/lib/card/card-header');
-const CardMedia = require('material-ui/lib/card/card-media');
-const CardText = require('material-ui/lib/card/card-text');
-const CardTitle = require('material-ui/lib/card/card-title');
-const Avatar = require('material-ui/lib/avatar');
-const FlatButton = require('material-ui/lib/flat-button');
-const RaisedButton = require('material-ui/lib/raised-button');
-var ReactGridLayout = require('react-grid-layout');
-const List = require('material-ui/lib/lists/list');
-const ListDivider = require('material-ui/lib/lists/list-divider');
-const ListItem = require('material-ui/lib/lists/list-item');
-const Colors = require('material-ui/src/styles/colors');
-const TextField = require('material-ui/lib/text-field');
-const SelectField = require('material-ui/lib/select-field');
-const LinkedStateMixin = require('react-addons-linked-state-mixin');
-const IconButton = require('material-ui/lib/icon-button');
-const FloatingActionButton = require('material-ui/lib/floating-action-button');
-const FontIcon = require('material-ui/lib/font-icon');
-const Badge = require('material-ui/lib/badge');
+import Card from 'material-ui/lib/card/card';
+import CardActions from 'material-ui/lib/card/card-actions';
+import CardExpandable from 'material-ui/lib/card/card-expandable';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardMedia from 'material-ui/lib/card/card-media';
+import CardText from 'material-ui/lib/card/card-text';
+import CardTitle from 'material-ui/lib/card/card-title';
+import Avatar from 'material-ui/lib/avatar';
+import FlatButton from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/lib/raised-button';
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
+import ListItem from 'material-ui/lib/lists/list-item';
+import Colors from 'material-ui/lib/styles/colors';
+import TextField from 'material-ui/lib/text-field';
+import SelectField from 'material-ui/lib/select-field';
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import IconButton from 'material-ui/lib/icon-button';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import FontIcon from 'material-ui/lib/font-icon';
+import Badge from 'material-ui/lib/badge';
 
-const FMUI = require('formsy-material-ui');
+import FMUI from 'formsy-material-ui';
 const {FormsyCheckbox, FormsyDate, FormsyRadio, FormsyRadioGroup, FormsySelect, FormsyText, FormsyTime, FormsyToggle} = FMUI;
 
 @autobind

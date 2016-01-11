@@ -6,25 +6,24 @@ import React from 'react';
 import autobind from 'autobind-decorator';
 import Paper from 'material-ui/lib/paper';
 import $ from 'jquery';
-const helpers = require('../helpers');
-const List = require('material-ui/lib/lists/list');
-const ListDivider = require('material-ui/lib/lists/list-divider');
-const ListItem = require('material-ui/lib/lists/list-item');
-const Avatar = require('material-ui/lib/avatar');
-const Colors = require('material-ui/src/styles/colors');
-const FloatingActionButton = require('material-ui/lib/floating-action-button');
-const FontIcon = require('material-ui/lib/font-icon');
-const IconButton = require('material-ui/lib/icon-button');
-const Card = require('material-ui/lib/card/card');
-const CardExpandable = require('material-ui/lib/card/card-expandable');
-const CardHeader = require('material-ui/lib/card/card-header');
-const CardText = require('material-ui/lib/card/card-text');
-const CardTitle = require('material-ui/lib/card/card-title');
-const Dialog = require('material-ui/lib/dialog');
-const LinearProgress = require('material-ui/lib/linear-progress');
-const Snackbar = require('material-ui/lib/snackbar');
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
+import helpers from '../helpers';
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import Colors from 'material-ui/lib/styles/colors';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import FontIcon from 'material-ui/lib/font-icon';
+import IconButton from 'material-ui/lib/icon-button';
+import Card from 'material-ui/lib/card/card';
+import CardExpandable from 'material-ui/lib/card/card-expandable';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardText from 'material-ui/lib/card/card-text';
+import CardTitle from 'material-ui/lib/card/card-title';
+import Dialog from 'material-ui/lib/dialog';
+import LinearProgress from 'material-ui/lib/linear-progress';
+import Snackbar from 'material-ui/lib/snackbar';
+import FlatButton from 'material-ui/lib/flat-button';
 
 @
 autobind
@@ -43,6 +42,7 @@ class ConfigurationHelper extends React.Component {
       curDn: '',
       curData: {},
       snapshot: null,
+      sbOpen: false,
     };
   }
 
@@ -88,7 +88,14 @@ class ConfigurationHelper extends React.Component {
       return
     }
 
-    setTimeout(this.verifyFaults, 10)
+    if(this.props.mini) {
+      this.setState({
+        sbOpen: true
+      })
+      this.props.finishedConfiguration()
+    } else {
+      setTimeout(this.verifyFaults, 1)
+    }
   }
 
   getRollbackSnapshot(){
@@ -102,8 +109,6 @@ class ConfigurationHelper extends React.Component {
       configStage: 1,
       configTime: new Date()
     })
-
-    this.props.mini ? this.refs.snackbar.show() : null
 
     // Get a copy of the MO currently
     $.ajax({
@@ -201,7 +206,7 @@ class ConfigurationHelper extends React.Component {
       this.setState({
         configStage: 0,
         apiError: null,
-        faults: []
+        faults: [],
       })
       setTimeout(this.getRollbackSnapshot, 10)
     }
@@ -223,18 +228,25 @@ class ConfigurationHelper extends React.Component {
     }
   }
 
+  finishedConfigurationSB(){
+    this.setState({
+      sbOpen: false
+    })
+  }
+
+  finishedConfiguration(){
+    if(this.state.configStage >= 2 || this.state.configStage <= -1) {
+      this.props.finishedConfiguration()
+    }
+  }
+
   render(){
 
     let standardActions = [
-      {
-        text: 'Instant Rollback',
-        onTouchTap: this.instantRollback,
-      },
-      {
-        text: 'Done',
-        onTouchTap: this.props.finishedConfiguration,
-        ref: 'submit'
-      }
+      <FlatButton label='Instant Rollback' onTouchTap={ this.instantRollback } />
+      ,
+      <FlatButton label='Done' onTouchTap={ this.props.finishedConfiguration } keyboardFocused={ true }
+      primary={ true } />
     ];
 
 
@@ -322,8 +334,8 @@ class ConfigurationHelper extends React.Component {
 
     }
 
-    var full = <Dialog title="Pushing to your Fabric" actions={ this.state.configStage >= 2 || this.state.configStage <= -1 ? standardActions : [] } actionFocus="submit"
-               open={ this.props.configStack.length > 0 } onRequestClose={ this.state.configStage >= 2 || this.state.configStage <= -1 ? this.props.finishedConfiguration : null }>
+    var full = <Dialog title="Pushing to your Fabric" actions={ this.state.configStage >= 2 || this.state.configStage <= -1 ? standardActions : [] } open={ this.props.configStack.length > 0 }
+               onRequestClose={ this.finishedConfiguration }>
                  <List>
                    { this.state.configStage == -2 ? rollback : <div /> }
                    { this.state.configStage == -1 ? api_error : <div /> }
@@ -334,8 +346,9 @@ class ConfigurationHelper extends React.Component {
                </Dialog>
 
     var mini = <div>
-                 <Snackbar message={ `Pushed ${this.props.configStack.length} change to your Fabric` } action="Instant Undo" autoHideDuration={ 1000 }
-                 ref="snackbar" onTouchTap={ this.instantRollback } onDismiss={ this.props.finishedConfiguration } />
+                 <Snackbar message={ `Pushing that to your Fabric` } action="Instant Undo" autoHideDuration={ 3000 }
+                 onActionTouchTap={ this.instantRollback } open={ this.state.sbOpen } onRequestClose={ this.finishedConfigurationSB }
+                 />
                </div>
 
     return <div>

@@ -8,39 +8,39 @@ import autobind from 'autobind-decorator';
 import Paper from 'material-ui/lib/paper';
 import Badge from 'material-ui/lib/badge';
 import reactMixin from 'react-mixin';
-const LinkedStateMixin = require('react-addons-linked-state-mixin');
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
 
-const List = require('material-ui/lib/lists/list');
-const ListDivider = require('material-ui/lib/lists/list-divider');
-const ListItem = require('material-ui/lib/lists/list-item');
-const Avatar = require('material-ui/lib/avatar');
-const Colors = require('material-ui/src/styles/colors');
-const Tabs = require('material-ui/lib/tabs/tabs');
-const Tab = require('material-ui/lib/tabs/tab');
-const Table = require('material-ui/lib/table/table');
-const TableBody = require('material-ui/lib/table/table-body');
-const TableFooter = require('material-ui/lib/table/table-footer');
-const TableHeader = require('material-ui/lib/table/table-header');
-const TableHeaderColumn = require('material-ui/lib/table/table-header-column');
-const TableRow = require('material-ui/lib/table/table-row');
-const TableRowColumn = require('material-ui/lib/table/table-row-column');
+import List from 'material-ui/lib/lists/list';
+import Divider from 'material-ui/lib/divider';
+import ListItem from 'material-ui/lib/lists/list-item';
+import Avatar from 'material-ui/lib/avatar';
+import Colors from 'material-ui/lib/styles/colors';
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
+import Table from 'material-ui/lib/table/table';
+import TableBody from 'material-ui/lib/table/table-body';
+import TableFooter from 'material-ui/lib/table/table-footer';
+import TableHeader from 'material-ui/lib/table/table-header';
+import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
+import TableRow from 'material-ui/lib/table/table-row';
+import TableRowColumn from 'material-ui/lib/table/table-row-column';
 
-const Card = require('material-ui/lib/card/card');
-const CardActions = require('material-ui/lib/card/card-actions');
-const CardExpandable = require('material-ui/lib/card/card-expandable');
-const CardHeader = require('material-ui/lib/card/card-header');
-const CardMedia = require('material-ui/lib/card/card-media');
-const CardText = require('material-ui/lib/card/card-text');
-const CardTitle = require('material-ui/lib/card/card-title');
+import Card from 'material-ui/lib/card/card';
+import CardActions from 'material-ui/lib/card/card-actions';
+import CardExpandable from 'material-ui/lib/card/card-expandable';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardMedia from 'material-ui/lib/card/card-media';
+import CardText from 'material-ui/lib/card/card-text';
+import CardTitle from 'material-ui/lib/card/card-title';
 
-const helpers = require('../helpers');
-const FlatButton = require('material-ui/lib/flat-button');
-const RaisedButton = require('material-ui/lib/raised-button');
-const Dialog = require('material-ui/lib/dialog');
-const FloatingActionButton = require('material-ui/lib/floating-action-button');
-const FontIcon = require('material-ui/lib/font-icon');
-const IconButton = require('material-ui/lib/icon-button');
+import helpers from '../helpers';
+import FlatButton from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/lib/raised-button';
+import Dialog from 'material-ui/lib/dialog';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import FontIcon from 'material-ui/lib/font-icon';
+import IconButton from 'material-ui/lib/icon-button';
 
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
@@ -55,12 +55,75 @@ injectTapEventPlugin();
 autobind
 class Applications extends React.Component {
 
+
+  constructor(){
+    super();
+    this.state = {
+      newAp: false
+    };
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(!prevState.newAp && this.state.newAp) {
+      this.refs.newApName.focus()
+    }
+  }
+
+  showNewAp(){
+    this.setState({
+      newAp: true
+    })
+  }
+  cancelNewAp(){
+    if(this.refs.newApName.getValue().length == 0) {
+      this.setState({
+        newAp: false
+      })
+    }
+  }
+  saveNewAp(){
+    const newApName = this.refs.newApName.getValue()
+    let appDn = `${this.props.tenantDn}/ap-${newApName}`
+
+    let data = {
+      fvAp: {
+        attributes: {
+          name: newApName,
+        }
+      }
+    };
+
+    this.context.pushConfiguration(appDn, data)
+    this.setState({
+      newAp: false
+    })
+  }
+
   render(){
-    var badgeIcon = <FloatingActionButton mini={ true } primary={ true } onClick={ this.showAddBDDialog }>
-                      <FontIcon className="material-icons">add</FontIcon>
-                    </FloatingActionButton>
+    if(this.state.newAp) {
+
+      var badgeIcon = <div>
+                        <FloatingActionButton backgroundColor={ Colors.green500 } mini={ true }
+                        secondary={ true } onClick={ this.saveNewAp }>
+                          <FontIcon className="material-icons">check</FontIcon>
+                        </FloatingActionButton>
+                        <TextField hintText={ "Give your new Application a name..." } onBlur={ this.cancelNewAp } ref="newApName"
+                        style={ {  marginLeft: 10,  width: 400} } inputStyle={ {  color: Colors.fullWhite} } />
+                      </div>
+    } else {
+      var badgeIcon = <div>
+                        <FloatingActionButton mini={ true } secondary={ true } onClick={ this.showNewAp }>
+                          <FontIcon className="material-icons">add</FontIcon>
+                        </FloatingActionButton>
+                      </div>
+    }
 
     return <Card>
+             <div style={ {  position: 'relative'} }>
+               <div style={ {  position: 'absolute',  'top': 2,  'left': 5} }>
+                 { badgeIcon }
+               </div>
+             </div>
              <Tabs inkBarStyle={ {  height: 5} }>
                { this.props.applications.map(application => <Tab onActive={ this.props.onSelectAp } label={ application.attributes.name } key={ application.attributes.name }>
                                                               <Application key={ application.attributes.name } application={ application } {...this.props}
@@ -71,6 +134,9 @@ class Applications extends React.Component {
            </Card>
   }
 }
+Applications.contextTypes = {
+  pushConfiguration: React.PropTypes.func
+};
 
 @
 autobind
