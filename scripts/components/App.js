@@ -26,6 +26,7 @@ import LeftNav from 'material-ui/lib/left-nav';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Divider from 'material-ui/lib/divider';
 
+import Snackbar from 'material-ui/lib/snackbar';
 
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
@@ -65,9 +66,11 @@ class App extends React.Component {
       fabric: {},
       baseURL: '',
       refreshJobId: null,
-      apicCookie: null,
       addTenant: false,
       leftNav: false,
+      badCredentials: false,
+      refreshingCredentials: false,
+      timeout: false
     };
   }
 
@@ -160,7 +163,7 @@ class App extends React.Component {
     object = object.imdata[0]
     var key = Object.keys(object)[0]
     var object = object[key]
-    console.log(key, object)
+    console.log('Updating state key=', key, 'object=', object)
     this.setState({
       [key]: object
     })
@@ -185,28 +188,27 @@ class App extends React.Component {
     $.ajax({
       url: `${this.state.baseURL}/aaaRefresh.json`,
       type: "GET",
-      success: response => {
+      success: result => {
+        var token = result.imdata[ 0 ].aaaLogin.attributes.token
+        $.ajaxSetup(Object.assign(this.defaultAjaxProps, {
+          headers: {
+            devcookie: token
+          }
+        })
+        )
+
         this.setState({
-          apicCookie: response.imdata[ 0 ].aaaLogin.attributes.token
-        });
+          badCredentials: false,
+          refreshingCredentials: false,
+          timeout: false,
+        })
       }
     })
   }
 
-  apiSuccess(aaaLogin){
+  apiSuccess(result){
 
-    // Refresh AAA token every minute
-    this.state.refreshJobId ? clearInterval(this.state.refreshJobID) : null
-    let refreshJobId = setInterval(this.refreshAAAToken, 1000 * 60)
-    this.setState({
-      refreshJobId
-    })
-
-    console.log(aaaLogin);
-    var token = aaaLogin.imdata[ 0 ].aaaLogin.attributes.token
-    this.setState({
-      apicCookie: token
-    });
+    var token = result.aaaLogin.attributes.token
 
     this.state.ws = new WebSocket(`wss://${this.state.fabric.address}/socket${token}`);
     var ws = this.state.ws;
@@ -219,9 +221,6 @@ class App extends React.Component {
         url: `${this.state.baseURL}/node/class/fvTenant.json?subscription=yes&order-by=fvTenant.name`,
         type: "GET",
         dataType: "json",
-        xhrFields: {
-          withCredentials: true
-        },
         success: this.setACIClass
       })
     }
@@ -235,9 +234,6 @@ class App extends React.Component {
       type: "GET",
       dataType: "json",
       contentType: "text/plain",
-      headers: {
-        devcookie: this.state.apicCookie
-      },
       success: info => this.setState({
           serverTimeZoneOffset: new Date(info.imdata[ 0 ].topInfo.attributes.currentTime).getTimezoneOffset()
         })
@@ -250,23 +246,27 @@ class App extends React.Component {
       url: `${this.state.baseURL}/api/mo/uni/tn-${tenant}.json?subscription=yes&query-target=self&rsp-subtree=full&rsp-prop-include=config-only&rsp-subtree-class=fvCtx,fvBD,fvAp`,
       type: "GET",
       dataType: "json",
-      xhrFields: {
-        withCredentials: true
-      },
       success: this.setACIObject
     })
   }
 
-  componentDidMount(){
-    // If we maybe want to let people attach their 
-    // Fabrics via Google login
-    //
-    //base.syncState(this.props.params.storeId + '/fishes', {
-    //  context: this,
-    //  state: 'fishes'
-    //});
+  ajaxError(error){
+    if(error.statusText == "timeout" || error.statusText == "error") {
+      this.setState({
+        timeout: true,
+        configStack: []
+      })
+      // Refresh AAA token every minute
+      if(!this.state.refreshJobId) {
+        let refreshJobId = setInterval(this.refreshAAAToken, 1000 * 30)
+        this.setState({
+          refreshJobId
+        })
+      }
+    }
+  }
 
-
+  tryAuth(callback){
     var data = JSON.stringify({
       "aaaUser": {
         "attributes": {
@@ -279,11 +279,87 @@ class App extends React.Component {
 
     $.ajax({
       url: `${this.state.baseURL}/aaaLogin.json`,
+      headers: {},
       type: "POST",
       data: data,
       dataType: "json",
-      success: this.apiSuccess,
+      success: (result) => {
+        // Refresh AAA token every minute
+        if(!this.state.refreshJobId) {
+          let refreshJobId = setInterval(this.refreshAAAToken, 1000 * 30)
+          this.setState({
+            refreshJobId
+          })
+        }
+
+        // Check login
+        result = result.imdata[ 0 ]
+        if(result.error) {
+          this.setState({
+            badCredentials: true
+          })
+          console.log('Could not auth')
+          return
+
+        } else {
+          var token = result.aaaLogin.attributes.token
+          $.ajaxSetup(Object.assign(this.defaultAjaxProps, {
+            headers: {
+              devcookie: token
+            }
+          })
+          )
+
+          this.setState({
+            badCredentials: false,
+            refreshingCredentials: false,
+            timeout: false,
+          })
+
+          if(callback)callback(result)
+        }
+      },
     })
+  }
+
+  statusCodeHandlers ={
+        400: (result) => {
+          console.log(result)
+        },
+        403: (result) => {
+          // We need to reauth if the token has timed out
+          this.setState({refreshingCredentials: true})
+          this.setState({configStack: []})
+          this.tryAuth()
+        }
+  };
+
+  defaultAjaxProps = {
+    statusCode: this.statusCodeHandlers,
+    timeout: 5000,
+    error: this.ajaxError,
+    headers: {}
+  };
+
+  componentWillUnmount(){
+    if(this.state.refreshJobId) {
+      clearInterval(this.state.refreshJobId)
+    }
+  }
+
+  componentDidMount(){
+    // If we maybe want to let people attach their 
+    // Fabrics via Google login
+    //
+    //base.syncState(this.props.params.storeId + '/fishes', {
+    //  context: this,
+    //  state: 'fishes'
+    //});
+    //
+
+    $.ajaxSetup(this.defaultAjaxProps)
+
+    this.tryAuth(this.apiSuccess)
   }
 
   handleAppBarClick(event){
@@ -465,6 +541,41 @@ class App extends React.Component {
         fabric={this.state.fabric}
         setTenant={this.setTenant}
       />
+
+
+      <Snackbar
+        open={this.state.badCredentials}
+        message="Dang, looks like you are disconnected from the fabric due to bad credentials"
+        action="Switch Fabric"
+        autoHideDuration={0}
+        onActionTouchTap={this.switchFabric}
+        onRequestClose={()=> {return}}
+      />
+
+      <Snackbar
+        open={this.state.refreshingCredentials}
+        message="Huh, that last request was refused. Hold on, I'll fresh your credentials"
+        action="Switch Fabric"
+        autoHideDuration={5000}
+        onActionTouchTap={this.switchFabric}
+        onRequestClose={() => {
+          this.setState({refreshingCredentials: false})
+          }
+        }
+      />
+
+      <Snackbar
+        open={this.state.timeout}
+        message="I'm timing out contacting your fabric. Will retry in under 30 seconds"
+        action="Switch Fabric"
+        autoHideDuration={0}
+        onActionTouchTap={this.switchFabric}
+        onRequestClose={() => {
+          this.setState({timeout: false})
+          }
+        }
+      />
+
     </div>
     )
     /*esfmt-ignore-end*/

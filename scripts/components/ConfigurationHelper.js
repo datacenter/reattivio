@@ -43,6 +43,7 @@ class ConfigurationHelper extends React.Component {
       curData: {},
       snapshot: null,
       sbOpen: false,
+      timers: []
     };
   }
 
@@ -67,9 +68,6 @@ class ConfigurationHelper extends React.Component {
       type: "POST",
       data: JSON.stringify(this.state.snapshot),
       dataType: "json",
-      xhrFields: {
-        withCredentials: true
-      },
       success: () => this.setState({
           configStage: -2
         })
@@ -94,7 +92,11 @@ class ConfigurationHelper extends React.Component {
       })
       this.props.finishedConfiguration()
     } else {
-      setTimeout(this.verifyFaults, 1)
+      var timers = this.state.timers
+      timers.push(setTimeout(this.verifyFaults, 1))
+      this.setState({
+        timers
+      })
     }
   }
 
@@ -115,9 +117,6 @@ class ConfigurationHelper extends React.Component {
       url: `https://${this.props.fabric.address}/api/mo/${dn}.json?rsp-prop-include=config-only`,
       type: "GET",
       dataType: "json",
-      xhrFields: {
-        withCredentials: true
-      },
       success: this.postConfiguration
     })
   }
@@ -136,23 +135,41 @@ class ConfigurationHelper extends React.Component {
       type: "POST",
       data: JSON.stringify(data),
       dataType: "json",
-      xhrFields: {
-        withCredentials: true
-      },
       success: this.handleConfigResponse
     })
   }
 
+  verifyFaultCountdown(){
+    const countdown = this.state.verifyCountdown
+    if(countdown == 0) {
+      clearInterval(this.state.verifyCountdownTimer)
+      var timers = this.state.timers
+      timers.push(setTimeout(this.collectFaults, 10))
+      this.setState({
+        timers,
+        verifyCountdownTimer: null
+      })
+    } else {
+      this.setState({
+        verifyCountdown: countdown - 1
+      })
+    }
+  }
+
   verifyFaults(){
+
+    var timers = this.state.timers
+
+    const interval = setInterval(this.verifyFaultCountdown, 100)
+    timers.push(interval)
+
+
     this.setState({
       configStage: 2,
       verifyCountdown: 30,
-      verifyCountdownTimer: setInterval(() => this.setState({
-          verifyCountdown: this.state.verifyCountdown - 1
-        }), 100)
+      verifyCountdownTimer: interval,
+      timers: timers
     })
-
-    setTimeout(this.collectFaults, 3100)
   }
 
   collectFaults(){
@@ -171,9 +188,6 @@ class ConfigurationHelper extends React.Component {
       url: `https://${this.props.fabric.address}/api/mo/${this.state.curDn}.json?&query-target=self&rsp-subtree=full&rsp-subtree-include=faults,no-scoped&rsp-subtree-filter=and(wcard(faultDelegate.created,"${configHour}"))`,
       type: "GET",
       dataType: "json",
-      xhrFields: {
-        withCredentials: true
-      },
       success: this.reportFaults
     })
   }
@@ -202,13 +216,17 @@ class ConfigurationHelper extends React.Component {
 
 
   componentWillReceiveProps(nextProps){
-    if(nextProps.configStack.length > 0) {
+    if(nextProps.configStack.length > 0 && this.state.configStage == 0) {
       this.setState({
         configStage: 0,
         apiError: null,
         faults: [],
       })
-      setTimeout(this.getRollbackSnapshot, 10)
+      var timers = this.state.timers
+      timers.push(setTimeout(this.getRollbackSnapshot, 10))
+      this.setState({
+        timers
+      })
     }
   }
 
@@ -229,13 +247,22 @@ class ConfigurationHelper extends React.Component {
   }
 
   finishedConfigurationSB(){
+    this.state.timers.map(timer => clearInterval(timer))
     this.setState({
-      sbOpen: false
+      sbOpen: false,
+      configStage: 0,
+      timers: []
     })
   }
 
   finishedConfiguration(){
+    this.state.timers.map(timer => clearInterval(timer))
     if(this.state.configStage >= 2 || this.state.configStage <= -1) {
+      this.setState({
+        sbOpen: false,
+        configStage: 0,
+        timers: []
+      })
       this.props.finishedConfiguration()
     }
   }

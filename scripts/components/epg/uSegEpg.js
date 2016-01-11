@@ -66,9 +66,6 @@ class USegEpg extends React.Component {
       url: `https://${this.props.fabric.address}/api/node/class/compVm.json`,
       type: "GET",
       dataType: "json",
-      xhrFields: {
-        withCredentials: true
-      },
       success: vms => {
         vms = vms.imdata
         let availableVMs = []
@@ -96,9 +93,6 @@ class USegEpg extends React.Component {
       url: `https://${this.props.fabric.address}/api/node/class/compHv.json?query-target-filter=and(wcard(compHv.dn, "prov-VMware"))`,
       type: "GET",
       dataType: "json",
-      xhrFields: {
-        withCredentials: true
-      },
       success: hvs => {
         hvs = hvs.imdata
         let availableHypervisors = []

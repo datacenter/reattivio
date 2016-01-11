@@ -65,9 +65,6 @@ class Tenant extends React.Component {
       url: `https://${this.props.fabric.address}/api/mo/uni/tn-${tenant}.json?query-target=self&rsp-subtree-include=health`,
       type: "GET",
       dataType: "json",
-      xhrFields: {
-        withCredentials: true
-      },
       success: this.updateHealthScore
     })
   }
@@ -97,7 +94,7 @@ class Tenant extends React.Component {
   }
 
   componentDidMount(){
-    setTimeout(this.getHealthScore.bind(this, this.props.tenant.attributes.name), 500)
+    setTimeout(this.getHealthScore.bind(this, this.props.tenant.attributes.name), 2000)
   }
 
   _createUSegEpg(application){

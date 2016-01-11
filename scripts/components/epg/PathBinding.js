@@ -89,9 +89,6 @@ class PathBinding extends React.Component {
     $.ajax({
       url: `https://${this.context.fabric.address}/api/class/fabricNode.json?query-target-filter=and(eq(fabricNode.role, "leaf"))`,
       type: "GET",
-      xhrFields: {
-        withCredentials: true
-      },
       success: result => {
         this.setState({
           nodes: result.imdata
@@ -104,9 +101,6 @@ class PathBinding extends React.Component {
     $.ajax({
       url: `https://${this.context.fabric.address}/api/class/fabricPathEp.json?query-target-filter=and(eq(fabricPathEp.lagT,"node"),wcard(fabricPathEp.dn,"^topology/pod-1/protpaths-."))`,
       type: "GET",
-      xhrFields: {
-        withCredentials: true
-      },
       success: result => {
         this.setState({
           vpc_paths: result.imdata
