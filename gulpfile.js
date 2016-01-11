@@ -1,6 +1,7 @@
 var source = require('vinyl-source-stream');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
+var environments = require('gulp-environments');
 var browserify = require('browserify');
 var babelify = require('babelify');
 var watchify = require('watchify');
@@ -16,6 +17,8 @@ var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var historyApiFallback = require('connect-history-api-fallback')
 
+var development = environments.development;
+var production = environments.production;
 
 /*
   Styles Task
@@ -106,12 +109,11 @@ function buildScript(file, watch){
     return stream
       .on('error', handleErrors)
       .pipe(source(file))
-      .pipe(gulp.dest('./build/'))
       // Minify for production
-      //.pipe(buffer())
-      //.pipe(uglify())
-      //.pipe(rename('app.min.js'))
-      //.pipe(gulp.dest('./build'))
+      .pipe(production(buffer()))
+      .pipe(production(uglify()))
+      // Pipe to build
+      .pipe(gulp.dest('./build/'))
       .pipe(reload({
         stream: true
       }))
@@ -143,4 +145,13 @@ gulp.task('default', [
     'styles'
   ]); // gulp watch for stylus changes
   return buildScript('main.js', true); // browserify watch for JS changes
+});
+
+gulp.task('build', [
+  'images',
+  'media',
+  'styles',
+], function (){
+
+  return buildScript('main.js', false); // browserify watch for JS changes
 });
