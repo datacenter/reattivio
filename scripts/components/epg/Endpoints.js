@@ -57,7 +57,22 @@ class Endpoints extends React.Component {
 
   updateEndpoints(result){
     result = result.imdata
-    let endpoints = result.map(obj => obj.fvCEp.attributes)
+    let endpoints = result.map(obj => {
+      let ep = obj.fvCEp
+      let children = ep.children
+      let attributes = ep.attributes
+
+      let paths = helpers.parseType(children, 'fvRsCEpToPathEp') || [];
+      paths = paths.map(path => path.attributes.tDn)
+
+      return {
+        name: attributes.name,
+        ip: attributes.ip,
+        mac: attributes.mac,
+        learn: attributes.lcC,
+        paths: paths,
+      }
+    })
     this.setState({
       endpoints,
       loaded: true
@@ -68,7 +83,7 @@ class Endpoints extends React.Component {
     let {tenantDn, application, epg} = this.props
     let appName = application.attributes.name
     $.ajax({
-      url: `https://${this.context.fabric.address}/api/mo/${tenantDn}/ap-${appName}/epg-${epg}.json?query-target=children&target-subtree-class=fvCEp`,
+      url: `https://${this.context.fabric.address}/api/mo/${tenantDn}/ap-${appName}/epg-${epg}.json?query-target=children&target-subtree-class=fvCEp&rsp-subtree=children&rsp-subtree-class=fvRsVm,fvRsHyper,fvRsCEpToPathEp,fvIp`,
       type: "GET",
       dataType: "json",
       success: this.updateEndpoints
@@ -83,7 +98,7 @@ class Endpoints extends React.Component {
       let {tenantDn, application, epg} = nextProps
       let appName = application.attributes.name
       $.ajax({
-        url: `https://${this.context.fabric.address}/api/mo/${tenantDn}/ap-${appName}/epg-${epg}.json?query-target=children&target-subtree-class=fvCEp`,
+        url: `https://${this.context.fabric.address}/api/mo/${tenantDn}/ap-${appName}/epg-${epg}.json?query-target=children&target-subtree-class=fvCEp&rsp-subtree=children&rsp-subtree-class=fvRsVm,fvRsHyper,fvRsCEpToPathEp,fvIp`,
         type: "GET",
         dataType: "json",
         success: this.updateEndpoints
@@ -102,9 +117,11 @@ class Endpoints extends React.Component {
     <Table selectable={ false } multiSelectable={ false }>
       <TableHeader displaySelectAll={ false } adjustForCheckbox={ false }>
         <TableRow>
-          <TableHeaderColumn tooltip='The ID'>Endpoint</TableHeaderColumn>
-          <TableHeaderColumn tooltip='The Name'>IP</TableHeaderColumn>
-          <TableHeaderColumn tooltip='The Status'>MAC</TableHeaderColumn>
+          <TableHeaderColumn style={ {  width: '17%'} } tooltip='Endpoint named (if available) learned from VMM'>Endpoint</TableHeaderColumn>
+          <TableHeaderColumn style={ {  width: '11%'} } tooltip='IP Address (if unavailable L3 learning is disabled or EP is L2)'>IP</TableHeaderColumn>
+          <TableHeaderColumn style={ {  width: '17%'} } tooltip='MAC Address'>MAC</TableHeaderColumn>
+          <TableHeaderColumn style={ {  width: '15%'} } tooltip='How has the fabric learned about this endpoint?'>Learn Source</TableHeaderColumn>
+          <TableHeaderColumn tooltip='Physical paths this endpoint is available behind'>Paths</TableHeaderColumn>
         </TableRow>
       </TableHeader>
       <TableBody displayRowCheckbox={ false } showRowHover={ this.state.showRowHover }
@@ -112,14 +129,23 @@ class Endpoints extends React.Component {
         { this.state.endpoints.map((ep) => {
             return (
             <TableRow key={ ep.mac }>
-              <TableRowColumn>
+              <TableRowColumn style={ {  width: '17%'} }>
                 { ep.name }
               </TableRowColumn>
-              <TableRowColumn>
+              <TableRowColumn style={ {  width: '11%'} }>
                 { ep.ip }
               </TableRowColumn>
-              <TableRowColumn>
+              <TableRowColumn style={ {  width: '17%'} }>
                 { ep.mac }
+              </TableRowColumn>
+              <TableRowColumn style={ {  width: '15%'} }>
+                { ep.learn }
+              </TableRowColumn>
+              <TableRowColumn>
+                { ep.paths.map(path => <p key={ path }>
+                                         { path }
+                                         <br/>
+                                       </p>) }
               </TableRowColumn>
             </TableRow>)
           }) }
@@ -128,7 +154,7 @@ class Endpoints extends React.Component {
     )
 
     return (
-    <div style={ {  maxWidth: 500,  paddingBottom: 25} }>
+    <div style={ {  maxWidth: 1000,  paddingBottom: 25} }>
       <CardTitle title={ `Endpoints for EPG ${this.props.epg}` } />
       { this.state.loaded ? endpoints : loading }
     </div>

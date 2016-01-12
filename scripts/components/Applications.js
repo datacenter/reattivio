@@ -487,7 +487,8 @@ class Application extends React.Component {
     return (
     <div className="row">
       <Popover open={ this.state.activeRow == "" ? false : true } onRequestClose={ this.hideEndpoints } anchorEl={ this.state.activeEl }
-      anchorOrigin={ {  "horizontal": "middle",  "vertical": "center"} } zDepth={ 3 } useLayerForClickAway={ false }>
+      anchorOrigin={ {  "horizontal": "middle",  "vertical": "center"} } targetOrigin={ {  "horizontal": "left",  "vertical": "top"} } zDepth={ 3 }
+      useLayerForClickAway={ false }>
         <div style={ {  padding: 20} }>
           <div style={ {  float: 'right',  paddingTop: 10,  paddingBottom: 10} }>
             <Endpoints epg={ this.state.activeRow } application={ this.props.application } tenantDn={ this.props.tenantDn }
