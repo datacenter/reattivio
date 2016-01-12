@@ -155,7 +155,6 @@ class Endpoints extends React.Component {
 
     return (
     <div style={ {  maxWidth: 1000,  paddingBottom: 25} }>
-      <CardTitle title={ `Endpoints for EPG ${this.props.epg}` } />
       { this.state.loaded ? endpoints : loading }
     </div>
     )

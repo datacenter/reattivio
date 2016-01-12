@@ -283,9 +283,6 @@ class Tenant extends React.Component {
     var subtitle = (
     <div style={ {  display: 'inline'} }>
       "Everything looks healthy right now"
-      <div style={ {  float: "right",  display: 'inline'} }>
-        { `Currently Selected: ${this.state.selectedEpg}` }
-      </div>
     </div>
     )
 
