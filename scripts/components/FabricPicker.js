@@ -129,8 +129,7 @@ class FabricPicker extends React.Component {
                   <CardTitle title="Enter Fabric Details" />
                   <Formsy.Form onValid={ this.enableButton } onInvalid={ this.disableButton } onValidSubmit={ this.submitForm.bind(this) }>
                     <input type="text" name="usernameFake" style={ {  display: 'none'} } />
-                    <input type="text" name="passwordFake" type="password" style={ {  display: 'none'} }
-                    />
+                    <input name="passwordFake" type="password" style={ {  display: 'none'} } />
                     <FormsyText required name="nickname" hintText="Nickname" floatingLabelText="Nickname"
                     />
                     <FormsyText required name="address" validationError="Must be a valid IP address or DNS name"
