@@ -12,12 +12,13 @@ First ensure that NodeJS and the node package manager (NPM) are installed in you
 
 Clone the repository and change to repo directory
 
-`git checkout git@gitlab.cisco.com:tigarner/reattivio.git`
+`git clone http://gitlab.cisco.com/tigarner/reattivio.git`  
+
 `cd reattivio`
 
 Install the required dependencies
 
-`npm install package.json`
+`npm install`
 
 Launch the development server
 
@@ -32,4 +33,3 @@ The default gulp task does not produce production javascript.
 To produce a production, minified version, run the following task
 
 `NODE_ENV=production gulp build`
-
