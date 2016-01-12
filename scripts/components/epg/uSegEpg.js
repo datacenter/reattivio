@@ -107,8 +107,6 @@ class USegEpg extends React.Component {
       }
     })
 
-    let matchItemContainer = helpers.parseType(this.props.epg.children, 'fvCrtrn')[ 0 ]
-    let matchItems = matchItemContainer.children || []
     let matchBin = {
       startsWith: [],
       endsWith: [],
@@ -116,14 +114,18 @@ class USegEpg extends React.Component {
       equals: [],
     };
 
-    matchItems.map(item => {
-      item = item.fvVmAttr.attributes
-      matchBin[ item.operator ].push({
-        name: item.value,
-        type: this.apicToInternalMapping[ item.type ]
-      })
+    let matchItemContainer = helpers.parseType(this.props.epg.children, 'fvCrtrn')[ 0 ]
+    if(matchItemContainer) {
+      var matchItems = matchItemContainer.children
+      matchItems.map(item => {
+        item = item.fvVmAttr.attributes
+        matchBin[ item.operator ].push({
+          name: item.value,
+          type: this.apicToInternalMapping[ item.type ]
+        })
 
-    })
+      })
+    }
     this.setState({
       matchBin
     })
@@ -297,7 +299,7 @@ class USegEpg extends React.Component {
                   <div style={ {  display: 'inline-block'} }>
                     <Formsy.Form>
                       <FormsySelect style={ {  marginTop: 5} } name="matchMode" value={ matchModeValue }
-                      menuItems={ [  {    payload: 'any',    text: 'Match at least one item'  },  {    payload: 'AtmostOne',    text: 'Match at most one item'  },  {    payload: 'All',    text: 'Must match all items'  },  {    payload: 'None',    text: 'None (Disable Policy)'  }] } />
+                      menuItems={ [  {    payload: 'any',    text: 'Will match on any item'  },  {    payload: 'all',    text: 'All items must be matched'  }] } />
                     </Formsy.Form>
                   </div>
                 </ToolbarGroup>

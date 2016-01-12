@@ -48,9 +48,10 @@ import ToolbarSeparator from 'material-ui/lib/toolbar/toolbar-separator';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import TextField from 'material-ui/lib/text-field';
 
+import Popover from 'material-ui/lib/popover/popover';
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
+import Endpoints from './epg/Endpoints';
+
 @
 autobind
 class Applications extends React.Component {
@@ -74,8 +75,8 @@ class Applications extends React.Component {
       newAp: true
     })
   }
-  cancelNewAp(){
-    if(this.refs.newApName.getValue().length == 0) {
+  cancelNewAp(force){
+    if(this.refs.newApName.getValue().length == 0 || force) {
       this.setState({
         newAp: false
       })
@@ -103,15 +104,12 @@ class Applications extends React.Component {
     if(this.state.newAp) {
 
       var badgeIcon = <div>
-                        <FloatingActionButton backgroundColor={ Colors.green500 } mini={ true }
-                        secondary={ true } onClick={ this.saveNewAp }>
-                          <FontIcon className="material-icons">check</FontIcon>
+                        <FloatingActionButton mini={ true } secondary={ true }>
+                          <FontIcon className="material-icons">info_outline</FontIcon>
                         </FloatingActionButton>
-                        <TextField hintText={ "Give your new Application a name..." } onBlur={ this.cancelNewAp } ref="newApName"
-                        style={ {  marginLeft: 10,  width: 400} } inputStyle={ {  color: Colors.fullWhite} } />
                       </div>
     } else {
-      var badgeIcon = <div>
+      var badgeIcon = <div ref="addEl">
                         <FloatingActionButton mini={ true } secondary={ true } onClick={ this.showNewAp }>
                           <FontIcon className="material-icons">add</FontIcon>
                         </FloatingActionButton>
@@ -122,6 +120,20 @@ class Applications extends React.Component {
              <div style={ {  position: 'relative'} }>
                <div style={ {  position: 'absolute',  'top': 2,  'left': 5} }>
                  { badgeIcon }
+                 <Popover open={ this.state.newAp } anchorEl={ this.refs.addEl } anchorOrigin={ {  "horizontal": "right",  "vertical": "center"} }
+                 zDepth={ 3 }>
+                   <div style={ {  padding: 20} }>
+                     <TextField hintText={ "Give your new Application a name..." } onBlur={ this.cancelNewAp.bind(this, false) } ref="newApName"
+                     keyboardFocused={ true } style={ {  marginLeft: 10,  width: 400} } />
+                     <br />
+                     <div style={ {  float: 'right',  paddingTop: 10,  paddingBottom: 10} }>
+                       <FlatButton label="Cancel" onTouchTap={ this.cancelNewAp.bind(this, true) } />
+                       <FlatButton label="Create Application" primary={ true } onTouchTap={ this.saveNewAp }
+                       />
+                     </div>
+                     <br />
+                   </div>
+                 </Popover>
                </div>
              </div>
              <Tabs inkBarStyle={ {  height: 5} }>
@@ -150,8 +162,12 @@ class Application extends React.Component {
       newEpg: false,
       newUSegEpg: false,
       epgs: [],
-      uSegEpgs: []
+      uSegEpgs: [],
+      activeRow: "",
+      activeRowId: -1,
+      activeEl: null,
     };
+    this.timer = 0
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -198,6 +214,58 @@ class Application extends React.Component {
     }
   }
 
+
+  onRowHoverExit(row){
+    let timer = this.timer
+    if(timer != 0) {
+      clearTimeout(timer)
+      this.timer = 0
+    //console.log(`Clearing timer=${timer}, oldRow=${row}`)
+    }
+
+    if(this.state.activeRow == "") {
+      this.setState({
+        activeRow: "",
+        activeRowId: -1,
+      })
+    }
+  }
+
+  getEndpoints(row){
+    var epgs = helpers.parseType(this.props.application.children, 'fvAEPg');
+    var uSegEpgs = epgs.filter(epg => epg.attributes.isAttrBasedEPg == 'yes')
+    epgs = epgs.filter(epg => epg.attributes.isAttrBasedEPg == 'no')
+    var selectedEpgId = row;
+    var epg = epgs[ selectedEpgId ];
+
+    this.setState({
+      activeRow: epg.attributes.name,
+      activeEl: ReactDOM.findDOMNode(this.refs[ epg.attributes.name ])
+    })
+  }
+
+  hideEndpoints(reason){
+    this.setState({
+      activeRow: "",
+      activeRowId: -1
+    })
+  }
+
+  onRowHover(row){
+    var {activeRowId} = this.state
+    var timer = this.timer
+
+    if(timer == 0 && row != this.state.activeRowId) {
+
+      this.setState({
+        activeRowId: row
+      })
+
+      let timer = setTimeout(this.getEndpoints.bind(this, row), 500)
+      this.timer = timer
+    //console.log(`Setting timer=${timer}, newRow=${row}, oldrow=${this.state.activeRowId}`)
+    }
+  }
 
   touched(){
     this.props._createUSegEpg();
@@ -292,7 +360,7 @@ class Application extends React.Component {
       var physDomsCount = domains.filter(dom => dom.attributes.tDn.includes('phys')).length
       var vmmDomsCount = domains.length - physDomsCount
       return (
-      <TableRow selected={ epg.attributes.name == this.props.selectedEpg ? true : false } key={ epg.attributes.name }>
+      <TableRow selected={ epg.attributes.name == this.props.selectedEpg ? true : false } key={ epg.attributes.name } ref={ epg.attributes.name }>
         <TableRowColumn>
           { epg.attributes.name }
         </TableRowColumn>
@@ -418,6 +486,16 @@ class Application extends React.Component {
 
     return (
     <div className="row">
+      <Popover open={ this.state.activeRow == "" ? false : true } onRequestClose={ this.hideEndpoints } anchorEl={ this.state.activeEl }
+      anchorOrigin={ {  "horizontal": "middle",  "vertical": "center"} } zDepth={ 3 } useLayerForClickAway={ false }>
+        <div style={ {  padding: 20} }>
+          <div style={ {  float: 'right',  paddingTop: 10,  paddingBottom: 10} }>
+            <Endpoints epg={ this.state.activeRow } application={ this.props.application } tenantDn={ this.props.tenantDn }
+            />
+          </div>
+          <br />
+        </div>
+      </Popover>
       <div className="row">
         <div className="col-lg-12">
           <Paper zDepth={ 3 } style={ {  margin: 25} }>
@@ -433,7 +511,7 @@ class Application extends React.Component {
               </ToolbarGroup>
               { this.state.newEpg && this.props.selectedBd ? newEpgText : null }
             </Toolbar>
-            <Table onRowSelection={ this.selectEpg }>
+            <Table onRowSelection={ this.selectEpg } onRowHover={ this.onRowHover } onRowHoverExit={ this.onRowHoverExit }>
               <TableHeader displaySelectAll={ false } adjustForCheckbox={ false }>
                 <TableRow>
                   <TableHeaderColumn tooltip='End Point Group name'>Name</TableHeaderColumn>
