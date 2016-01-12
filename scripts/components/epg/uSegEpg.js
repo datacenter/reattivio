@@ -417,9 +417,9 @@ class VMBin extends React.Component {
             <span style={ {  lineHeight: '300px'} }></span>
             <div style={ {  'verticalAlign': 'middle',  display: 'inline-block'} }>
               { this.getPlaceHolder(isActive) }
-              { this.props.selectedItems[ this.props.type ].map(key => <RaisedButton backgroundColor={ Colors.red400 } key={ key.name } label={ key.name }
-                                                                       onClick={ this.props.removeMatchItem.bind(this, key.name, key.type, this.props.type) } style={ {  margin: '7px'} } secondary={ true }
-                                                                       labelColor={ ItemColors[ key.type ].label } backgroundColor={ ItemColors[ key.type ].background } />) }
+              { this.props.selectedItems[ this.props.type ].map(key => <RaisedButton key={ key.name } label={ key.name } onClick={ this.props.removeMatchItem.bind(this, key.name, key.type, this.props.type) }
+                                                                       style={ {  margin: '7px'} } secondary={ true } labelColor={ ItemColors[ key.type ].label }
+                                                                       backgroundColor={ ItemColors[ key.type ].background } />) }
             </div>
           </div>
         </div>
