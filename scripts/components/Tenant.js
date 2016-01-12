@@ -11,7 +11,7 @@ import BridgeDomains from './networking/BridgeDomains';
 import PrivateNetworks from './networking/PrivateNetworks';
 import Applications from './Applications';
 import USegEpg from './epg/USegEpg';
-import EpgConnections from './epg/Epgs';
+import EpgConnections from './epg/EpgConnections';
 
 import Card from 'material-ui/lib/card/card';
 import CardHeader from 'material-ui/lib/card/card-header';

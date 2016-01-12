@@ -1,5 +1,5 @@
 /*
-  Epgs
+  EpgConnections
 */
 import React, { PropTypes } from 'react';
 import autobind from 'autobind-decorator';
