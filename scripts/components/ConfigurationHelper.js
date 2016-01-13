@@ -272,7 +272,7 @@ class ConfigurationHelper extends React.Component {
     let standardActions = [
       <FlatButton label='Instant Rollback' onTouchTap={ this.instantRollback } />
       ,
-      <FlatButton label='Done' onTouchTap={ this.props.finishedConfiguration } keyboardFocused={ true }
+      <FlatButton label='Done' onTouchTap={ this.finishedConfiguration } keyboardFocused={ true }
       primary={ true } />
     ];
 
