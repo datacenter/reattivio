@@ -1,12 +1,16 @@
 # Reattiv.io
 
+A hosted version of Reattiv.io can be found at [reattivio.cisco.com](http://reattivio.cisco.com/)
+
 ## How to install and run your own local version
 
 Copy index.html and build/ folder to a front end webserver (apache2, nginx)
 
 ## Developing
 
-First ensure that NodeJS and the node package manager (NPM) are installed in your environment
+First ensure that NodeJS and the node package manager (npm) are installed in your environment
+
+`node --version`
 
 `npm --version`
 
@@ -32,4 +36,4 @@ The default gulp task does not produce production javascript.
 
 To produce a production, minified version, run the following task
 
-`NODE_ENV=production gulp build`
+`npm build`
