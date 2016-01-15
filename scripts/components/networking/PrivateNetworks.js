@@ -58,9 +58,11 @@ class PrivateNetworks extends React.Component {
   }
 
   cancelNewVrf(){
-    this.setState({
-      newVrf: false
-    })
+    if(this.refs.newVrfName.getValue() == "") {
+      this.setState({
+        newVrf: false
+      })
+    }
   }
 
   componentDidUpdate(prevProps, prevState){
