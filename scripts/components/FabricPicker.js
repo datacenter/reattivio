@@ -128,7 +128,7 @@ class FabricPicker extends React.Component {
               avatar={ <Avatar style={ {  color: Colors.fullWhite} }>?</Avatar> } actAsExpander={ true } showExpandableButton={ true }
               />
               <CardText expandable={ true }>
-                <CardTitle title="1. Accept the APIC certificate" subtitle="Navigate to your APIC and accept the security certifciate permanently"
+                <CardTitle title="1. Accept the APIC certificate" subtitle="Navigate to your APIC and accept the security certificate permanently"
                 style={ {  fontSize: 5} } />
                 <img src="build/media/step_1.png" />
                 <CardTitle title="2. Set Allow Origins field to *" subtitle="Under Fabric > Fabric Policies > Pod Policies > Policies > Management Access > default"
