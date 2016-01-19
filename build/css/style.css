@@ -1127,6 +1127,6 @@ body {
   font-weight: 500;
 }
 .fabric-picker-container {
-  background: url("/build/media/login_background.jpg") no-repeat center center fixed;
+  background: url("/build/media/login_background.jpg") no-repeat center center local;
   height: 100%;
 }

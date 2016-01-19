@@ -119,9 +119,24 @@ class FabricPicker extends React.Component {
 
   render(){
     return (
-    <div className="fabric-picker-container">
-      <div className="row center-lg middle-lg middle-md middle-sm top-xs" style={ {  height: '100%'} }>
+    <div className="fabric-picker-container" style={ {  minHeight: '100%'} }>
+      <div className="row center-lg middle-lg middle-md middle-sm top-xs" style={ {  minHeight: '100%'} }>
         <div className="col-lg-8 col-md-6 col-sm-8 col-xs-12">
+          <div style={ {  textAlign: 'left',  marginBottom: 15} }>
+            <Card initiallyExpanded={ false }>
+              <CardHeader title="Having trouble connecting to your fabric?" subtitle="Solution in here..."
+              avatar={ <Avatar style={ {  color: Colors.fullWhite} }>?</Avatar> } actAsExpander={ true } showExpandableButton={ true }
+              />
+              <CardText expandable={ true }>
+                <CardTitle title="1. Accept the APIC certificate" subtitle="Navigate to your APIC and accept the security certifciate permanently"
+                style={ {  fontSize: 5} } />
+                <img src="build/media/step_1.png" />
+                <CardTitle title="2. Set Allow Origins field to *" subtitle="Under Fabric > Fabric Policies > Pod Policies > Policies > Management Access > default"
+                />
+                <img src="build/media/step_2.png" />
+              </CardText>
+            </Card>
+          </div>
           <Card>
             <CardText style={ {  padding: 100} }>
               <div className="row">
