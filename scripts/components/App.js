@@ -566,7 +566,7 @@ class App extends React.Component {
 
       <Snackbar
         open={this.state.timeout}
-        message="I'm timing out contacting your fabric. Will retry in under 30 seconds"
+        message="Connection timeout. Retrying in under 30 seconds... Fix on the front page"
         action="Switch Fabric"
         autoHideDuration={0}
         onActionTouchTap={this.switchFabric}
