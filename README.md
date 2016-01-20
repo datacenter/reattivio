@@ -15,8 +15,6 @@ Can help you understand the ACI configuration, faults and Rest API
 ![Mini clip of configuration helper](readme/reattivio-ch.gif?raw=true "Reattiv.io configuration helper")
 
 
-A hosted version of Reattiv.io can be found at [reattivio.cisco.com](http://reattivio.cisco.com/)
-
 ## How to install and run your own local version
 
 As this is a client side application you need very little to host your own version:
