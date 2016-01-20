@@ -11,11 +11,6 @@ import $ from 'jquery';
 import FontIcon from 'material-ui/lib/font-icon';
 import { History } from 'react-router';
 
-
-// Firebase
-//import Rebase from 're-base';
-//var base = Rebase.createClass('https://catch-of-the-day-tim.firebaseio.com/');
-
 import AppBar from 'material-ui/lib/app-bar'
 import Paper from 'material-ui/lib/paper';
 
@@ -348,15 +343,6 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-    // If we maybe want to let people attach their 
-    // Fabrics via Google login
-    //
-    //base.syncState(this.props.params.storeId + '/fishes', {
-    //  context: this,
-    //  state: 'fishes'
-    //});
-    //
-
     $.ajaxSetup(this.defaultAjaxProps)
 
     this.tryAuth(this.apiSuccess)
