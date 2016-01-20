@@ -37,7 +37,7 @@ First ensure that NodeJS and the node package manager (npm) are installed in you
 
 Clone the repository and change to reattivio directory
 
-`git clone http://gitlab.cisco.com/tigarner/reattivio.git`  
+`git clone https://github.com/datacenter/reattivio.git`  
 
 `cd reattivio`
 

@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://gitlab.cisco.com/tigarner/reattivio.git"
+    "url": "https://github.com/datacenter/reattivio.git"
   },
   "license": "Apache-2.0",
   "devDependencies": {
