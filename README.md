@@ -14,11 +14,20 @@ Can help you understand the ACI configuration, faults and Rest API
 
 ![Mini clip of configuration helper](readme/reattivio-ch.gif?raw=true "Reattiv.io configuration helper")
 
+
 A hosted version of Reattiv.io can be found at [reattivio.cisco.com](http://reattivio.cisco.com/)
 
 ## How to install and run your own local version
 
-Copy index.html and build/ folder to a front end webserver (apache2, nginx)
+As this is a client side application you need very little to host your own version:
+
+- A web server (e.g. apache, nginx)
+
+Expecting more? Not here! 
+
+- Grab a copy of this repository (use Git to clone or download the .zip file) 
+
+- Copy index.html and build/ folder to your chosen web servers root directory
 
 ## Developing
 
@@ -28,7 +37,7 @@ First ensure that NodeJS and the node package manager (npm) are installed in you
 
 `npm --version`
 
-Clone the repository and change to repo directory
+Clone the repository and change to reattivio directory
 
 `git clone http://gitlab.cisco.com/tigarner/reattivio.git`  
 
@@ -50,8 +59,39 @@ The default gulp task does not produce production javascript.
 
 To produce a production, minified version, run the following task
 
-`npm build`
+`npm run build`
 
+## Current Implementation Status
+
+- [x] Save and connect to multiple fabrics
+- [x] Delete known fabric credentials
+- [x] Warn user of bad credentials
+- [x] Warn user of connection timeout
+- [x] Resume connection after timeout 
+- [x] Display Tenant health
+- [x] Display Tenants, Applications, EPGs, BDs, VRFs 
+- [x] Filter any list of objects
+- [x] Display EPs on EPG hover 
+- [x] Create Tenants, Applications, EPGs, BDs, VRFs
+- [x] Toggle BD flooding status
+- [x] Toggle Vrf flooding status
+- [x] Relate BD to VRF
+- [x] Relate EPG to BD
+- [x] Drag-n-drop microsegmentation
+- [x] Create EPG path binding
+- [x] Create EPG VMM binding
+- [x] Display POST dn and data
+- [x] Listen and display faults after config change
+- [x] Rollback object attribute changes 
+- [x] Disable "Configuration Helper" 
+- [ ] Delete objects
+- [ ] Create EPG node binding
+- [ ] Create EPG phys binding
+- [ ] View EPG bindings
+- [ ] Contracts
+- [ ] L4-7 Services
+- [ ] Fabric Management
+- [ ] Administration
 
 ## License
 
