@@ -64,7 +64,7 @@ class VMMBinding extends React.Component {
     //var vmmDomP = require('../../samples/vmmDomP.json')[ 'imdata' ];
 
     $.ajax({
-      url: `https://${this.context.fabric.address}/api/class/vmmDomP.json`,
+      url: `${this.context.fabric.protocol}://${this.context.fabric.address}/api/class/vmmDomP.json`,
       type: "GET",
       success: result => {
         this.setState({

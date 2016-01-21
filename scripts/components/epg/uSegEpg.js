@@ -63,7 +63,7 @@ class USegEpg extends React.Component {
 
   componentDidMount(){
     $.ajax({
-      url: `https://${this.props.fabric.address}/api/node/class/compVm.json`,
+      url: `${this.props.fabric.protocol}://${this.props.fabric.address}/api/node/class/compVm.json`,
       type: "GET",
       dataType: "json",
       success: vms => {
@@ -90,7 +90,7 @@ class USegEpg extends React.Component {
       }
     })
     $.ajax({
-      url: `https://${this.props.fabric.address}/api/node/class/compHv.json?query-target-filter=and(wcard(compHv.dn, "prov-VMware"))`,
+      url: `${this.props.fabric.protocol}://${this.props.fabric.address}/api/node/class/compHv.json?query-target-filter=and(wcard(compHv.dn, "prov-VMware"))`,
       type: "GET",
       dataType: "json",
       success: hvs => {

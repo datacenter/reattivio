@@ -64,7 +64,7 @@ class ConfigurationHelper extends React.Component {
     /*esfmt-ignore-end*/
 
     $.ajax({
-      url: `https://${this.props.fabric.address}/api/mo/${dn}.json`,
+      url: `${this.props.fabric.protocol}://${this.props.fabric.address}/api/mo/${dn}.json`,
       type: "POST",
       data: JSON.stringify(this.state.snapshot),
       dataType: "json",
@@ -114,7 +114,7 @@ class ConfigurationHelper extends React.Component {
 
     // Get a copy of the MO currently
     $.ajax({
-      url: `https://${this.props.fabric.address}/api/mo/${dn}.json?rsp-prop-include=config-only`,
+      url: `${this.props.fabric.protocol}://${this.props.fabric.address}/api/mo/${dn}.json?rsp-prop-include=config-only`,
       type: "GET",
       dataType: "json",
       success: this.postConfiguration
@@ -131,7 +131,7 @@ class ConfigurationHelper extends React.Component {
     /*esfmt-ignore-end*/
 
     $.ajax({
-      url: `https://${this.props.fabric.address}/api/mo/${dn}.json`,
+      url: `${this.props.fabric.protocol}://${this.props.fabric.address}/api/mo/${dn}.json`,
       type: "POST",
       data: JSON.stringify(data),
       dataType: "json",
@@ -185,7 +185,7 @@ class ConfigurationHelper extends React.Component {
     configHour = ''
 
     $.ajax({
-      url: `https://${this.props.fabric.address}/api/mo/${this.state.curDn}.json?&query-target=self&rsp-subtree=full&rsp-subtree-include=faults,no-scoped&rsp-subtree-filter=and(wcard(faultDelegate.created,"${configHour}"))`,
+      url: `${this.props.fabric.protocol}://${this.props.fabric.address}/api/mo/${this.state.curDn}.json?&query-target=self&rsp-subtree=full&rsp-subtree-include=faults,no-scoped&rsp-subtree-filter=and(wcard(faultDelegate.created,"${configHour}"))`,
       type: "GET",
       dataType: "json",
       success: this.reportFaults

@@ -77,6 +77,7 @@ class FabricPicker extends React.Component {
   submitForm(model){
     event.preventDefault();
     let fabrics = this.state.fabrics
+    model.protocol = model.protocol ? "https" : "http"
     fabrics[ model.nickname ] = model
     console.log(fabrics)
 
@@ -108,8 +109,10 @@ class FabricPicker extends React.Component {
     let rightIcon = <IconButton onClick={ this.removeFabric.bind(this, fabric.nickname) } iconClassName="material-icons" tooltipPosition="top-center"
                     tooltip="Forget Fabric">close</IconButton>
 
+    let protocol = fabric.protocol || "http"
+
     let item = (
-    <ListItem key={ fabric.nickname } secondaryText={ `${fabric.address} ${fabric.username}` } onClick={ this.chooseFabric.bind(this, fabric.nickname) }
+    <ListItem key={ fabric.nickname } secondaryText={ `${protocol} ${fabric.address} ${fabric.username}` } onClick={ this.chooseFabric.bind(this, fabric.nickname) }
     rightIconButton={ rightIcon }>
       { fabric.nickname }
     </ListItem>
@@ -155,6 +158,13 @@ class FabricPicker extends React.Component {
                     <br />
                     <FormsyText required name="password" hintText="Password" floatingLabelText="Password"
                     type="password" />
+                    <br />
+                    <div style={ {  textAlign: 'center',  marginTop: 20} }>
+                      <div style={ {  margin: "auto auto",  width: 200} }>
+                        <FormsyToggle name='protocol' label="Use HTTPS?" defaultChecked={ false }
+                        />
+                      </div>
+                    </div>
                     <br />
                     <br />
                     <br />

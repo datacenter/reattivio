@@ -83,7 +83,7 @@ class Endpoints extends React.Component {
     let {tenantDn, application, epg} = this.props
     let appName = application.attributes.name
     $.ajax({
-      url: `https://${this.context.fabric.address}/api/mo/${tenantDn}/ap-${appName}/epg-${epg}.json?query-target=children&target-subtree-class=fvCEp&rsp-subtree=children&rsp-subtree-class=fvRsVm,fvRsHyper,fvRsCEpToPathEp,fvIp`,
+      url: `${this.context.fabric.protocol}://${this.context.fabric.address}/api/mo/${tenantDn}/ap-${appName}/epg-${epg}.json?query-target=children&target-subtree-class=fvCEp&rsp-subtree=children&rsp-subtree-class=fvRsVm,fvRsHyper,fvRsCEpToPathEp,fvIp`,
       type: "GET",
       dataType: "json",
       success: this.updateEndpoints
@@ -98,7 +98,7 @@ class Endpoints extends React.Component {
       let {tenantDn, application, epg} = nextProps
       let appName = application.attributes.name
       $.ajax({
-        url: `https://${this.context.fabric.address}/api/mo/${tenantDn}/ap-${appName}/epg-${epg}.json?query-target=children&target-subtree-class=fvCEp&rsp-subtree=children&rsp-subtree-class=fvRsVm,fvRsHyper,fvRsCEpToPathEp,fvIp`,
+        url: `${this.context.fabric.protocol}://${this.context.fabric.address}/api/mo/${tenantDn}/ap-${appName}/epg-${epg}.json?query-target=children&target-subtree-class=fvCEp&rsp-subtree=children&rsp-subtree-class=fvRsVm,fvRsHyper,fvRsCEpToPathEp,fvIp`,
         type: "GET",
         dataType: "json",
         success: this.updateEndpoints

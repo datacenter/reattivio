@@ -62,7 +62,7 @@ class Tenant extends React.Component {
 
   getHealthScore(tenant){
     $.ajax({
-      url: `https://${this.props.fabric.address}/api/mo/uni/tn-${tenant}.json?query-target=self&rsp-subtree-include=health`,
+      url: `${this.props.fabric.protocol}://${this.props.fabric.address}/api/mo/uni/tn-${tenant}.json?query-target=self&rsp-subtree-include=health`,
       type: "GET",
       dataType: "json",
       success: this.updateHealthScore

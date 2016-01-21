@@ -83,7 +83,8 @@ class App extends React.Component {
 
     let fabrics = JSON.parse(localStorage.getItem('fabrics'))
     let fabric = fabrics[ this.props.params.fabricId ];
-    let baseURL = `https://${fabric.address}/api`
+    fabric.protocol = fabric.protocol || "http"
+    let baseURL = `${fabric.protocol}://${fabric.address}/api`
 
     if(!fabric) {
       this.context.history.pushState(null, '/');

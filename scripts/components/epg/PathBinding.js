@@ -87,7 +87,7 @@ class PathBinding extends React.Component {
 
   componentDidMount(){
     $.ajax({
-      url: `https://${this.context.fabric.address}/api/class/fabricNode.json?query-target-filter=and(eq(fabricNode.role, "leaf"))`,
+      url: `${this.context.fabric.protocol}://${this.context.fabric.address}/api/class/fabricNode.json?query-target-filter=and(eq(fabricNode.role, "leaf"))`,
       type: "GET",
       success: result => {
         this.setState({
@@ -99,7 +99,7 @@ class PathBinding extends React.Component {
       }
     })
     $.ajax({
-      url: `https://${this.context.fabric.address}/api/class/fabricPathEp.json?query-target-filter=and(eq(fabricPathEp.lagT,"node"),wcard(fabricPathEp.dn,"^topology/pod-1/protpaths-."))`,
+      url: `${this.context.fabric.protocol}://${this.context.fabric.address}/api/class/fabricPathEp.json?query-target-filter=and(eq(fabricPathEp.lagT,"node"),wcard(fabricPathEp.dn,"^topology/pod-1/protpaths-."))`,
       type: "GET",
       success: result => {
         this.setState({
