@@ -1016,7 +1016,7 @@ pre {
   word-wrap: break-word;
 }
 q {
-  quotes: 2 1 C 2 1 D 2 18 2 19;
+  quotes: 2 1C 2 1D 2 18 2 19;
 }
 small {
   font-size: 80%;
@@ -1129,4 +1129,12 @@ body {
 .fabric-picker-container {
   background: url("/build/media/login_background.jpg") no-repeat center center local;
   height: 100%;
+}
+.fabric-picker-paper {
+  padding: 100px;
+}
+@media (max-width: 500px) {
+  .fabric-picker-paper {
+    padding: 10px;
+  }
 }
