@@ -123,8 +123,9 @@ class FabricPicker extends React.Component {
   render(){
     return (
     <div className="fabric-picker-container" style={ {  minHeight: '100%'} }>
-      <div className="row center-lg middle-lg middle-md middle-sm top-xs" style={ {  minHeight: '100%'} }>
-        <div className="col-lg-8 col-md-6 col-sm-8 col-xs-12">
+      <div className="row center-lg middle-lg center-md middle-md center-sm middle-sm middle-xs"
+      style={ {  minHeight: '100%'} }>
+        <div className="col-lg-8 col-md-10 col-sm-10 col-xs-12">
           <div style={ {  textAlign: 'left',  marginBottom: 15} }>
             <Card initiallyExpanded={ false }>
               <CardHeader title="Having trouble connecting to your fabric?" subtitle="Solution in here..."
@@ -141,52 +142,56 @@ class FabricPicker extends React.Component {
             </Card>
           </div>
           <Card>
-            <CardText style={ {  padding: 100} }>
-              <div className="row">
-                <div className="col-lg-5">
-                  <CardTitle title="Enter Fabric Details" />
-                  <Formsy.Form onValid={ this.enableButton } onInvalid={ this.disableButton } onValidSubmit={ this.submitForm.bind(this) }>
-                    <input type="text" name="usernameFake" style={ {  display: 'none'} } />
-                    <input name="passwordFake" type="password" style={ {  display: 'none'} } />
-                    <FormsyText required name="nickname" hintText="Nickname" floatingLabelText="Nickname"
-                    />
-                    <FormsyText required name="address" validationError="Must be a valid IP address or DNS name"
-                    hintText="Address" floatingLabelText="Address" />
-                    <br />
-                    <FormsyText required name="username" hintText="Username" floatingLabelText="Username"
-                    />
-                    <br />
-                    <FormsyText required name="password" hintText="Password" floatingLabelText="Password"
-                    type="password" />
-                    <br />
-                    <div style={ {  textAlign: 'center',  marginTop: 20} }>
-                      <div style={ {  margin: "auto auto",  width: 200} }>
-                        <FormsyToggle name='protocol' label="Use HTTPS?" defaultChecked={ false }
-                        />
+            <CardText>
+              <div className="fabric-picker-paper">
+                <div className="row">
+                  <div className="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                    <CardTitle title="Enter Fabric Details" />
+                    <Formsy.Form onValid={ this.enableButton } onInvalid={ this.disableButton } onValidSubmit={ this.submitForm.bind(this) }>
+                      <input type="text" name="usernameFake" style={ {  display: 'none'} } />
+                      <input name="passwordFake" type="password" style={ {  display: 'none'} } />
+                      <FormsyText required name="nickname" hintText="Nickname" floatingLabelText="Nickname"
+                      />
+                      <FormsyText required name="address" validationError="Must be a valid IP address or DNS name"
+                      hintText="Address" floatingLabelText="Address" />
+                      <br />
+                      <FormsyText required name="username" hintText="Username" floatingLabelText="Username"
+                      />
+                      <br />
+                      <FormsyText required name="password" hintText="Password" floatingLabelText="Password"
+                      type="password" />
+                      <br />
+                      <div style={ {  textAlign: 'center',  marginTop: 20} }>
+                        <div style={ {  margin: "auto auto",  width: 200} }>
+                          <FormsyToggle name='protocol' label="Use HTTPS?" defaultChecked={ false }
+                          />
+                        </div>
                       </div>
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <RaisedButton disabled={ !this.state.canSubmit } type="submit" label="Save and Connect to ACI Fabric"
+                      primary={ true } />
+                    </Formsy.Form>
+                  </div>
+                  <div className="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <div style={ {  textAlign: 'center'} }>
+                      <CardTitle title="Or" />
                     </div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <RaisedButton disabled={ !this.state.canSubmit } type="submit" label="Save and Connect to ACI Fabric"
-                    primary={ true } />
-                  </Formsy.Form>
-                </div>
-                <div className="col-lg-2">
-                  <CardTitle title="Or" />
-                </div>
-                <div className="col-lg-5">
-                  <CardTitle title="Choose from known Fabrics" />
-                  <div style={ {  maxHeight: 300,  overflowY: 'scroll'} }>
-                    <List>
-                      { Object.keys(this.state.fabrics).map(key => {
-                          var fabric = this.state.fabrics[ key ]
-                          return this.getFabric(fabric)
-                        }) }
-                    </List>
+                  </div>
+                  <div className="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                    <CardTitle title="Choose from known Fabrics" />
+                    <div style={ {  maxHeight: 300,  overflowY: 'scroll'} }>
+                      <List>
+                        { Object.keys(this.state.fabrics).map(key => {
+                            var fabric = this.state.fabrics[ key ]
+                            return this.getFabric(fabric)
+                          }) }
+                      </List>
+                    </div>
                   </div>
                 </div>
               </div>
