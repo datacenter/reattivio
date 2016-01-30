@@ -43,6 +43,8 @@ Clone the repository and change to reattivio directory
 
 Install the required dependencies
 
+`npm install -g gulp`
+
 `npm install`
 
 Launch the development server
