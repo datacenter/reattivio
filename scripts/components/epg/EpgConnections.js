@@ -129,7 +129,7 @@ class EpgConnections extends React.Component {
                   <Card>
                     <CardMedia overlay={ <CardTitle title="Path Bindings" subtitle="External network connected to a port, PC, or vPC"
                                          /> }>
-                      <img style={ {  height: 337} } src="/build/media/path_binding.png" />
+                      <img style={ {  height: 337} } src="./build/media/path_binding.png" />
                     </CardMedia>
                     <CardActions>
                       <FlatButton label="New" onClick={ this.openPathBindingDialog } />
@@ -141,7 +141,7 @@ class EpgConnections extends React.Component {
                   <Card>
                     <CardMedia overlay={ <CardTitle title="Node Bindings" subtitle="External network connected to all ports on a leaf"
                                          /> }>
-                      <img style={ {  height: 337} } src="/build/media/node_binding.png" />
+                      <img style={ {  height: 337} } src="./build/media/node_binding.png" />
                     </CardMedia>
                     <CardActions>
                       <FlatButton label="New" />
@@ -153,7 +153,7 @@ class EpgConnections extends React.Component {
                   <Card>
                     <CardMedia overlay={ <CardTitle title="Virtual Domain Bindings" subtitle="Dynamic virtual networking (vCenter, HyperV, OpenStack, Docker)"
                                          /> }>
-                      <img style={ {  height: 337} } src="/build/media/vmm_binding.png" />
+                      <img style={ {  height: 337} } src="./build/media/vmm_binding.png" />
                     </CardMedia>
                     <CardActions>
                       <FlatButton label="New" onClick={ this.openVMMBindingDialog } />
@@ -165,7 +165,7 @@ class EpgConnections extends React.Component {
                   <Card>
                     <CardMedia overlay={ <CardTitle title="Physical Domain Bindings" subtitle="Specify physical switch ports and vlans this Tenant can use"
                                          /> }>
-                      <img style={ {  height: 337} } src="/build/media/phys_binding.png" />
+                      <img style={ {  height: 337} } src="./build/media/phys_binding.png" />
                     </CardMedia>
                     <CardActions>
                       <FlatButton label="New" onClick={ this.openVMMBindingDialog } />

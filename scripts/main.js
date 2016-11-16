@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route } from 'react-router';
-import { createHistory } from 'history';
+import { createHashHistory } from 'history';
 
 import NotFound from './components/NotFound';
 import FabricPicker from './components/FabricPicker';
@@ -12,7 +12,7 @@ import App from './components/App';
 */
 
 var routes = (
-<Router history={ createHistory() }>
+<Router history={ createHashHistory() }>
   <Route path="/" component={ FabricPicker } />
   <Route path="/fabric/:fabricId" component={ App } />
   <Route path="*" component={ NotFound } />

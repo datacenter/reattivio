@@ -1,6 +1,7 @@
 /*
   App
 */
+
 import React from 'react';
 import Tenant from './Tenant';
 import ConfigurationHelper from './ConfigurationHelper';
@@ -8,6 +9,7 @@ import Catalyst from 'react-catalyst';
 import reactMixin from 'react-mixin';
 import autobind from 'autobind-decorator';
 import $ from 'jquery';
+import cookie from 'cookie'
 import FontIcon from 'material-ui/lib/font-icon';
 import { History } from 'react-router';
 
@@ -35,8 +37,7 @@ import Immutable from 'immutable'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-@
-autobind
+@autobind
 class App extends React.Component {
 
   constructor(){
@@ -65,7 +66,8 @@ class App extends React.Component {
       leftNav: false,
       badCredentials: false,
       refreshingCredentials: false,
-      timeout: false
+      timeout: false,
+      app: false
     };
   }
 
@@ -81,21 +83,46 @@ class App extends React.Component {
       muiTheme: newMuiTheme,
     });
 
-    let fabrics = JSON.parse(localStorage.getItem('fabrics'))
-    let fabric = fabrics[ this.props.params.fabricId ];
-    fabric.protocol = fabric.protocol || "http"
-    let baseURL = `${fabric.protocol}://${fabric.address}/api`
+    // If we encounter the app center cookie instantly redirect
+    var cookies = cookie.parse(document.cookie || '')
+    if (cookies.app_Cisco_Reattivio_token){
+      console.log('Reattivio running in App Center mode')
 
-    if(!fabric) {
-      this.context.history.pushState(null, '/');
-      return
+      let fabric = {
+        protocol: window.location.protocol == 'http:' ? 'http' : 'https',
+        address: window.location.hostname,
+        username: null,
+        password: null,
+      }
+
+      let baseURL = `${fabric.protocol}://${fabric.address}/api`
+      this.setState({
+        fabric: fabric,
+        baseURL: baseURL,
+        app: cookies.app_Cisco_Reattivio_token
+      });
+
     }
 
-    this.setState({
-      fabric: fabric,
-      baseURL: baseURL
-    });
+    // Otherwise, continue normal auth route
+    else {
 
+      let fabrics = JSON.parse(localStorage.getItem('fabrics'))
+      let fabric = fabrics[ this.props.params.fabricId ];
+      fabric.protocol = fabric.protocol || "http"
+      let baseURL = `${fabric.protocol}://${fabric.address}/api`
+
+      if(!fabric) {
+        this.context.history.pushState(null, '/');
+        return
+      }
+
+      this.setState({
+        fabric: fabric,
+        baseURL: baseURL
+      });
+
+    }
 
     let miniConfigHelper = JSON.parse(localStorage.getItem('miniConfigHelper'))
     if(miniConfigHelper == null) {
@@ -204,9 +231,11 @@ class App extends React.Component {
 
   apiSuccess(result){
 
-    var token = result.aaaLogin.attributes.token
+    var token = result
 
-    this.state.ws = new WebSocket(`wss://${this.state.fabric.address}/socket${token}`);
+    var wsProtcol = this.state.fabric.protocol == 'https' ? 'wss' : 'ws'
+
+    this.state.ws = new WebSocket(`${wsProtcol}://${this.state.fabric.address}/socket${token}`);
     var ws = this.state.ws;
 
     ws.onmessage = this.receiveWSEvent
@@ -263,6 +292,14 @@ class App extends React.Component {
   }
 
   tryAuth(callback){
+
+
+    // If we're in app mode, return existing token
+    if (this.state.app){
+        if(callback)callback(this.state.app)
+        return
+    }
+
     var data = JSON.stringify({
       "aaaUser": {
         "attributes": {
@@ -312,7 +349,7 @@ class App extends React.Component {
             timeout: false,
           })
 
-          if(callback)callback(result)
+          if(callback)callback(result.aaaLogin.attributes.token)
         }
       },
     })

@@ -8,7 +8,7 @@ import { History } from 'react-router';
 import h from '../helpers';
 import reactMixin from 'react-mixin';
 import autobind from 'autobind-decorator';
-
+import cookie from 'cookie'
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
 import Paper from 'material-ui/lib/paper';
@@ -48,6 +48,20 @@ class FabricPicker extends React.Component {
       accent1Color: Colors.lightBlue700,
       primary1Color: Colors.blueGrey400
     });
+
+
+    // If we encounter the app center cookie instantly redirect
+    var cookies = cookie.parse(document.cookie || '')
+    if (cookies.app_Cisco_Reattivio_token){
+      console.log('Skipping fabric picker as running in App Center mode')
+
+      this.setState({
+        muiTheme: newMuiTheme,
+        fabrics: {}
+      });
+      this.context.history.pushState(null, '/fabric/app/')
+    }
+
 
     let fabrics = JSON.parse(localStorage.getItem('fabrics')) || {}
 
@@ -134,10 +148,10 @@ class FabricPicker extends React.Component {
               <CardText expandable={ true }>
                 <CardTitle title="1. Accept the APIC certificate" subtitle="Navigate to your APIC and accept the security certificate permanently"
                 style={ {  fontSize: 5} } />
-                <img src="build/media/step_1.png" />
+                <img src="./build/media/step_1.png" />
                 <CardTitle title="2. Set Allow Origins field to *" subtitle="Under Fabric > Fabric Policies > Pod Policies > Policies > Management Access > default"
                 />
-                <img src="build/media/step_2.png" />
+                <img src="./build/media/step_2.png" />
               </CardText>
             </Card>
           </div>

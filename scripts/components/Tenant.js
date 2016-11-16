@@ -81,7 +81,7 @@ class Tenant extends React.Component {
 
   componentWillMount(){
     var headerImageID = helpers.getRandomIntInclusive(1, 3)
-    var headerImageSrc = `/build/media/header_${headerImageID}.jpg`
+    var headerImageSrc = `./build/media/header_${headerImageID}.jpg`
     this.setState({
       headerImageSrc
     })

@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>Loading</title>
+    <meta content="text/html"/>
+    <link rel="stylesheet" type="text/css" href="/insieme/stromboli/resources/css/insieme-ext-theme.css" />
+    <script type="text/javascript" src="/extjs/ext-all-debug.js"></script>
+    <script type="text/javascript">
+     function onBodyLoad() {
+       var arr, url, newUrl = "app.html", myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+       myMask.show();
+       window.addEventListener('message', function (e) {
+         myMask.hide();
+         myMask.destroy();
+         if (e.source === window.parent) {
+           var tokenObj = Ext.decode(e.data, true);
+           if (tokenObj) {
+             Ext.util.Cookies.set('app_' + tokenObj.appId + '_token', tokenObj.token);
+             Ext.util.Cookies.set('app_' + tokenObj.appId + '_urlToken', tokenObj.urlToken);
+             url = window.location.href;
+             arr = url.split("?");
+             if (arr.length >= 2 && !Ext.isEmpty(arr[1])) {
+               newUrl += "?" + arr[1];
+             }
+             window.location.href = newUrl;
+           } else {
+             Ext.Msg.alert("Error", "Can not load token from backend.");
+           }
+         } });
+     } </script>
+  </head>
+  <body onLoad="onBodyLoad()"></body>
+</html>

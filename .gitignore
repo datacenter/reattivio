@@ -1,3 +1,12 @@
 .DS_Store
+.eslintrc.json
 node_modules
+build
+aci_app_packager.py
+aci_app_validator.py
+*.pyc
+*.aci
+appcenter/UIAssets/build
+appcenter/UIAssets/app.html
+appcenter/aci_app_packager.log
 
