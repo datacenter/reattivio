@@ -27,12 +27,12 @@ Expecting more? Not here!
 
 - Copy index.html and build/ folder to your chosen web servers root directory
 
-If you don't have a webserver readily available, you can even deploy this using docker if you like, after cloning this
+If you don't have a webserver readily available, you can even deploy Reattiv.io using docker if you like, after cloning this
 repo simply run the following commands on your docker host
 
 ```
 docker build -t reattivio .
-docker run -p 8080:80 reattivio
+docker run -p 8000:8000 reattivio
 ```
 
 ## Developing

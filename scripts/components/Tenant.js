@@ -10,7 +10,7 @@ import Paper from 'material-ui/lib/paper';
 import BridgeDomains from './networking/BridgeDomains';
 import PrivateNetworks from './networking/PrivateNetworks';
 import Applications from './Applications';
-import USegEpg from './epg/USegEpg';
+import USegEpg from './epg/uSegEpg';
 import EpgConnections from './epg/EpgConnections';
 
 import Card from 'material-ui/lib/card/card';
